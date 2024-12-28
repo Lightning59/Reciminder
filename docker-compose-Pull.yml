@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  reciminder-web:
+    image: evanmccaleb59/reciminder-web:0.0.0-dev.1
+    env_file:
+      - prod.env
+    command: bash -c "python Django/manage.py runserver 0.0.0.0:8987"
+    ports:
+      - "8987:8987"

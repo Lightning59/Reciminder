@@ -3,8 +3,8 @@ version: '3.9'
 services:
   web:
     build: .
+    env_file:
+      - dev.env
     command: bash -c "python Django/manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/app
     ports:
       - "8000:8000"
