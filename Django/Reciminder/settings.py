@@ -25,6 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(e5vnps6rlgc@-=to3ic8cmgt7fa_rtu11@ctv6wt56l^j&9x+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
+
 DEBUG = os.environ.get('DEBUG', '')
 if DEBUG.lower() == "true":
     DEBUG = True
@@ -45,6 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'users.apps.UsersConfig',
+
+
 ]
 
 MIDDLEWARE = [
@@ -129,3 +135,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+AUTH_USER_MODEL = "users.User"
