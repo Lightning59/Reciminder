@@ -1,6 +1,13 @@
-from django.http import HttpResponse
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
-    return HttpResponse("<!DOCTYPE html><html><head><title>Reciminder</title></head><body><h1>Welcome to Reciminder!</h1><p>Bear with us the website is still in development.</p></body></html>")
+    return render(request, 'landing_page.html')
 # Create your views here.
+
+@login_required
+def logged_in_home(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, 'logged_in_temp.html', context)
