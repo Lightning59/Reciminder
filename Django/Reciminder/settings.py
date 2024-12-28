@@ -37,6 +37,8 @@ else:
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', "").split(',')
 #ALLOWED_HOSTS = ['192.168.2.214',  '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = ['https://recipe.test']
+
 
 # Application definition
 
