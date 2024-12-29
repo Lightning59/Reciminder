@@ -3,7 +3,7 @@ import uuid6
 
 
 class Recipe(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid6.uuid7(), unique=True, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid6.uuid7, unique=True, editable=False)
     title=models.CharField(max_length=255) # this seemed pretty long based on my attempts to type up a hypothetical
                                            # long recipe title - Came to ~100. So pick 255(256?) as a good permissive lim
     description_free_text=models.TextField(null=True, blank=True)
