@@ -5,4 +5,16 @@
     <h3> You are logged in as {{ user.username }}!</h3>
     <p>There's Still Nothing here.</p>
     <p>UserFirstName: {{ user.first_name }}</p>
+    <a href="{% url 'add-recipe' %}">Click here to add a recipe.</a>
+
+    <br>
+    {% for recipe in recipes %}
+        <div>
+            <h4>{{ recipe.title }}</h4>
+            <p>{{ recipe.description_free_text|linebreaksbr  }}</p>
+            <p>{{ recipe.ingredients_free_text|linebreaksbr  }}</p>
+            <p>{{ recipe.instructions_free_text|linebreaksbr }}</p>
+            <p>Serves: {{ recipe.servings_per_nominal }}</p>
+        </div>
+    {% endfor %}
 {% endblock content %}
