@@ -16,6 +16,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DB_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -97,7 +98,7 @@ if db_mode.lower() == "dev":
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': DB_DIR / 'db.sqlite3',
         }
     }
 else:
@@ -116,6 +117,14 @@ else:
             'PORT': DB_PORT,
         }
     }
+
+# Email Conf
+email_mode=os.environ.get('DJANGO_EMAIL_MODE', '')
+if db_mode.lower() == "dev":
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    # add SMTP configuration here in the future.
+    pass
 
 
 # Password validation

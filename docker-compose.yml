@@ -5,6 +5,6 @@ services:
     build: .
     env_file:
       - dev.env
-    command: bash -c " python Django/manage.py migrate && python Django/manage.py runserver 0.0.0.0:8000"
+    command: bash -c " python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
