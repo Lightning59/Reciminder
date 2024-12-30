@@ -13,6 +13,7 @@ class Recipe(models.Model):
     modified=models.DateTimeField(auto_now=True)
     deleted_by_user=models.BooleanField(default=False)
     servings_per_nominal=models.FloatField(null=True, blank=True)
+    original_website_link=models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.title

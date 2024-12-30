@@ -15,6 +15,9 @@
             <h4>{{ recipe.title }}</h4>
             <p>{{ recipe.description_free_text|linebreaksbr  }}</p>
             <p>{{ recipe.ingredients_free_text|linebreaksbr  }}</p>
+            {% if recipe.original_website_link %}
+                <p><a href="{{ recipe.original_website_link }}">Original Recipe Link</a></p>
+            {% endif %}
             <p>{{ recipe.instructions_free_text|linebreaksbr }}</p>
             <p>Serves: {{ recipe.servings_per_nominal }}</p>
         </div>
