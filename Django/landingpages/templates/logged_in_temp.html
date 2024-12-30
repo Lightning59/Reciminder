@@ -4,23 +4,16 @@
     <div class="flex one">
     <h1 class="centertext"> Welcome to Reciminder!</h1>
     <h3 class="centertext"> You are logged in as {{ user.username }}!</h3>
-    <p class="centertext">There's Still Nothing here.</p>
     <p class="centertext">UserFirstName: {{ user.first_name }}</p>
     <p class="centertext"><a href="{% url 'add-recipe' %}">Click here to add a recipe.</a></p>
     </div>
     <br>
     <div class="main_center flex one two-800  three-1200">
     {% for recipe in recipes %}
-        <div>
+        <a class="recipe-card" href="{% url 'recipe' recipe.id %}"><div class="card">
             <h4>{{ recipe.title }}</h4>
             <p>{{ recipe.description_free_text|linebreaksbr  }}</p>
-            <p>{{ recipe.ingredients_free_text|linebreaksbr  }}</p>
-            {% if recipe.original_website_link %}
-                <p><a href="{{ recipe.original_website_link }}">Original Recipe Link</a></p>
-            {% endif %}
-            <p>{{ recipe.instructions_free_text|linebreaksbr }}</p>
-            <p>Serves: {{ recipe.servings_per_nominal }}</p>
-        </div>
+        </div></a>
     {% endfor %}
     </div>
 {% endblock content %}
