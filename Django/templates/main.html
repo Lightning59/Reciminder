@@ -4,10 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Reciminder</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
+    <style>
+        .header {
+            margin: auto;
+            margin-top: 50px;
+        }
+        .main_center{
+            margin: auto;
+            width: 90%;
+        }
+        .centertext{
+            text-align: center;
+        }
+
+    </style>
 </head>
 <body>
-{% block content %}
+<nav class="nav"><h3>This Would Be the Navbar</h3></nav>
+<div class="header flex">
+    <h1 class="centertext">Then a Header?</h1>
+</div>
+<div class="flex one">
+    {% block content %}
+    {% endblock %}
+</div>
 
-{% endblock %}
 </body>
 </html>
