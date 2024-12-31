@@ -19,3 +19,7 @@ def login_user(request):
             return redirect('index')
 
     return render(request, 'login_screen.html')
+
+def logout_user(request):
+    logout(request)
+    return redirect('index')
