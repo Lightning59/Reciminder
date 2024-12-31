@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reciminder</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
+    <style>
+        .header {
+            margin: auto;
+            margin-top: 50px;
+        }
+        .main_center{
+            margin: auto;
+            width: 90%;
+        }
+        .recipe-card{
+            margin: 10px;
+            padding: 5px;
+            max-width: 400px;
+        }
+        .centertext{
+            text-align: center;
+        }
+        .danger-align{
+            float: right;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="nav"><h3>This Would Be the Navbar</h3></nav>
+<div class="header flex">
+    <h1 class="centertext">Then a Header?</h1>
+</div>
+<div class="flex one">
+    {% block content %}
+    {% endblock %}
+</div>
+
+</body>
+</html>
