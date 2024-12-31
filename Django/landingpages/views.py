@@ -10,6 +10,6 @@ def index(request):
 @login_required
 def logged_in_home(request):
     user = request.user
-    all_recipes = Recipe.objects.all()
+    all_recipes = Recipe.objects.filter(deleted_by_user=False).all()
     context = {'user': user, 'recipes': all_recipes}
     return render(request, 'logged_in_temp.html', context)
