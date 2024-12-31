@@ -23,3 +23,20 @@ def view_recipe(request, pk):
         'recipe': recipe,
     }
     return render(request, 'individual_recipe.html', context)
+
+
+@login_required(login_url='login')
+def edit_recipe(request, pk):
+    recipe = Recipe.objects.get(id=pk)
+    form = RecipeForm(instance=recipe)
+    context = {
+        'recipe': recipe,
+        'form': form,
+    }
+    if request.method == 'POST':
+        form = RecipeForm(request.POST, instance=recipe)
+        if form.is_valid():
+            form.save()
+            return redirect('recipe', pk=pk)
+
+    return render(request, 'add-recipe.html', context)
