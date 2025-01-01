@@ -8,6 +8,7 @@
     <p class="centertext"><a href="{% url 'add-recipe' %}">Click here to add a recipe.</a></p>
     </div>
     <br>
+    <section>
     <div class="main_center flex one two-800  three-1200">
     {% for recipe in recipes %}
         <a class="recipe-card" href="{% url 'recipe' recipe.id %}"><div class="card">
@@ -16,4 +17,12 @@
         </div></a>
     {% endfor %}
     </div>
+    {% if total_pages > 1 %}
+    <div class="main_center flex center">
+        {% for page in page_range %}
+        <a class="button paginate-button" href="?page={{page}}">{{ page }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    </section>
 {% endblock content %}

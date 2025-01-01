@@ -6,6 +6,20 @@
     <title>Reciminder</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
     <style>
+        footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3em;
+        padding: 0 .6em;
+        background: #fff;
+        box-shadow: 0 0 .2em rgba(170, 170, 170, .2);
+        z-index: 10000;
+        transition: all .3s;
+        transform-style: preserve-3d
+        }
+
         .header {
             margin: auto;
             margin-top: 50px;
@@ -24,6 +38,11 @@
         }
         .danger-align{
             float: right;
+        }
+        .paginate-button{
+            float: right;
+            margin: 10px;
+            max-width: 50px;
         }
 
     </style>
@@ -44,6 +63,6 @@
     {% block content %}
     {% endblock %}
 </div>
-
+<footer class="footer">&copy; Reciminder</footer>
 </body>
 </html>
