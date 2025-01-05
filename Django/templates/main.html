@@ -49,10 +49,13 @@
             width: 90%;
             max-width: 1000px;
         }
+        .stay-above-footer{
+            margin-bottom: 350px;
+        }
 
     </style>
 </head>
-<body>
+<body class="stay-above-footer">
 <nav class="nav">
     <a class="brand" href="{% url 'index' %}"><span>Reciminder</span></a>
     {% if request.user.is_authenticated %}
@@ -68,6 +71,6 @@
     {% block content %}
     {% endblock %}
 </div>
-<footer class="footer">&copy; Reciminder</footer>
 </body>
+<footer class="footer">&copy; Reciminder</footer>
 </html>
