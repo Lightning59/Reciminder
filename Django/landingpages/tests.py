@@ -1,6 +1,29 @@
+import pytest
 from django.test import TestCase
 from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed, assertContains
+from users.models import User
 
+
+@pytest.fixture
+def basic_user():
+    return User.objects.create_user(username='test', password='kdflsafjiewl')
+
+
+@pytest.mark.django_db
+def test_main_logged_in(client, basic_user):
+    client.login(username=basic_user.username, password='kdflsafjiewl')
+    response = client.get('/')
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'main.html')
+    assertContains(response, 'Logout</a>')
+
+
+def test_main_logged_out(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'main.html')
+    assertContains(response, 'Login</a>')
 
 
 class LandingPageViewTests(TestCase):
