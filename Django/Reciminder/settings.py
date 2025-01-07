@@ -174,4 +174,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "users.User"
 TEST_RUNNER = 'Reciminder.runner.PytestTestRunner'
 
+
+from warnings import filterwarnings
+
+filterwarnings(
+    "ignore", "The FORMS_URLFIELD_ASSUME_HTTPS transitional setting is deprecated."
+)
 FORMS_URLFIELD_ASSUME_HTTPS = True
+
