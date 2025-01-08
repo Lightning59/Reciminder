@@ -2,13 +2,25 @@
 
 {% block content %}
     <div class="flex one">
-    <h1 class="centertext"> Welcome to Reciminder!</h1>
-    <h3 class="centertext"> You are logged in as {{ user.username }}!</h3>
-    <p class="centertext">UserFirstName: {{ user.first_name }}</p>
-    <p class="centertext"><a href="{% url 'add-recipe' %}">Click here to add a recipe.</a></p>
+        <h1 class="centertext"> Welcome to Reciminder!</h1>
+        <h3 class="centertext"> You are logged in as {{ user.username }}!</h3>
+        <p class="centertext">UserFirstName: {{ user.first_name }}</p>
+        <p class="centertext"><a href="{% url 'add-recipe' %}">Click here to add a recipe.</a></p>
+        <div class="recipe-search">
+              <form id="searchForm" class="form" action="" method="get">
+                <div class="">
+                  <label>Search For Recipes</label>
+                  <input class="" id="" type="text" name="search_query"
+                    placeholder="What are you hungry for?" value="{{search_query}}"/>
+                </div>
+
+                <input class="button danger-align" type="submit" value="Search" />
+              </form>
+        </div>
     </div>
     <br>
-    <div class="main_center flex one two-800  three-1200">
+    <section>
+    <div class="main_center center flex one two-800  three-1200">
     {% for recipe in recipes %}
         <a class="recipe-card" href="{% url 'recipe' recipe.id %}"><div class="card">
             <h4>{{ recipe.title }}</h4>
@@ -16,4 +28,12 @@
         </div></a>
     {% endfor %}
     </div>
+    {% if total_pages > 1 %}
+    <div class="main_center flex center">
+        {% for page in page_range %}
+        <a class="button paginate-button" href="?page={{page}}">{{ page }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    </section>
 {% endblock content %}

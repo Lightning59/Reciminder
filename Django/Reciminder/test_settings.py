@@ -7,3 +7,5 @@ DATABASES = {
         }
     }
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+TEST_RUNNER = 'pytest_django.runner.PyTestRunner'

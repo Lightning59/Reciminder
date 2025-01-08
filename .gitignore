@@ -2,5 +2,5 @@
 .venv/
 *.sqlite3
 prod_env/
-Django/htmlcov*
+Django/htmlcov/*
 .coverage
