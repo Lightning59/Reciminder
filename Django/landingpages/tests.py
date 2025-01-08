@@ -14,15 +14,14 @@ class TestMainGroup:
     Mainly tests for if the header displaying something reasonable"""
 
     @pytest.mark.django_db
-    def test_main_logged_in(self,client, basic_user):
+    def test_main_logged_in(self, client, basic_user):
         client.login(username=basic_user.username, password='kdflsafjiewl')
         response = client.get('/')
         assert response.status_code == 200
         assertTemplateUsed(response, 'main.html')
         assertContains(response, 'Logout</a>')
 
-
-    def test_main_logged_out(self,client):
+    def test_main_logged_out(self, client):
         response = client.get('/')
         assert response.status_code == 200
         assertTemplateUsed(response, 'main.html')
@@ -31,6 +30,7 @@ class TestMainGroup:
 
 class TestLandingPageView:
     """tests that the index landing page is being served correctly Likely needs update once page is matured"""
+
     def test_call_index_directly(self, client):
         response = client.get('/')
         assert response.status_code == 200
