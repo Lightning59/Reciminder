@@ -50,12 +50,12 @@
             max-width: 1000px;
         }
         .stay-above-footer{
-            margin-bottom: 350px;
+            margin-bottom: 50px;
         }
 
     </style>
 </head>
-<body class="stay-above-footer">
+<body>
 <nav class="nav">
     <a class="brand" href="{% url 'index' %}"><span>Reciminder</span></a>
     {% if request.user.is_authenticated %}
@@ -67,7 +67,7 @@
 <div class="header flex">
     <h1 class="centertext">Then a Header?</h1>
 </div>
-<div class="flex one">
+<div class="flex one stay-above-footer">
     {% block content %}
     {% endblock %}
 </div>
