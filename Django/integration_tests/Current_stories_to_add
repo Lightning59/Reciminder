@@ -1,0 +1,29 @@
+A user logs navigates to home
+clicks login
+enters valid u/name password
+gets an empty page of recipes
+clicks add recipe
+fills out the form
+sees recipe in home page
+logs out
+ends up back at index
+
+
+
+A logged in user goes to a site with 5 recipes.
+picks one
+edits the tile and adds an ingredient
+submits
+sees the changes on that recipe.
+
+
+A logged in user goes to the site with 10 recipes and 2 recipes per page
+His recipe should be number 8  and should be on page 4
+he clicks page 4 and gets his recipe
+
+
+A logged in user goes to the site with 10 recipes and 2 recipes per page
+he searches for the recipe using a term that matches the one from prev item and one other on page 3
+he gets one page with those two recipes only
+he clears the search bar and hits enter
+he goes back to the original results

@@ -24,6 +24,6 @@ def login_user(request: HttpRequest) -> HttpResponse:
 
 
 def logout_user(request: HttpRequest) -> HttpResponseRedirect:
-    """Logs user out then redirects them back to home page."""
+    """Logs user out then redirects them back to index landing page."""
     logout(request)
     return redirect('index')
