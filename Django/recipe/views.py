@@ -62,7 +62,7 @@ def delete_recipe(request, pk):
     return redirect('home')
 
 
-@login_required
+@login_required(login_url='login')
 def logged_in_home(request):
     user = request.user
     all_recipes, search_query = search_recipes(request)
