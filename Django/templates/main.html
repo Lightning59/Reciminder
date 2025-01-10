@@ -50,7 +50,7 @@
             max-width: 1000px;
         }
         .stay-above-footer{
-            margin-bottom: 50px;
+            margin-bottom: 3em;
         }
 
     </style>
@@ -67,10 +67,11 @@
 <div class="header flex">
     <h1 class="centertext">Then a Header?</h1>
 </div>
-<div class="flex one stay-above-footer">
+<main class="stay-above-footer">
     {% block content %}
     {% endblock %}
-</div>
-</body>
+</main>
+<br>
 <footer class="footer">&copy; Reciminder</footer>
+</body>
 </html>
