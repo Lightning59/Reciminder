@@ -18,7 +18,7 @@ def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
 
 @login_required(login_url='login')
 def add_recipe(request: HttpRequest) -> HttpResponse:
-    """Allows the logged in user to add a recipe sends them to the home screen if successful otherwise back to
+    """Allows the logged-in user to add a recipe sends them to the home screen if successful otherwise back to
      add-recipe. redirects logged-out user to the login screen."""
     form = RecipeForm()
     context = {'form': form}
@@ -77,6 +77,7 @@ def logged_in_home(request: HttpRequest, pagination_res_per_page: int = 5) -> Ht
     Accepts pagination as keyword argument with prod default (allows lower to be used in testing)"""
     user = request.user
     all_recipes, search_query = search_recipes(request)
+
     this_page_recipes, total_pages = paginate_recipes(request, all_recipes, pagination_res_per_page)
     page_range = list(range(1, total_pages + 1))
     context = {'user': user,
