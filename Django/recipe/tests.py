@@ -68,7 +68,7 @@ def http_request_page5():
 # No page attribute: List of 10 items, items per page 3, should return list of first 3 items, 4
 def test_paginate_ten_take3_no_page(http_request_no_page, list_of_ten_strings):
     queryset, total_pages = paginate_recipes(http_request_no_page, list_of_ten_strings, 3)
-    assert queryset.object_list == ['a','b', 'c']
+    assert queryset.object_list == ['a', 'b', 'c']
     assert total_pages == 4
 
 
@@ -111,11 +111,11 @@ def test_paginate_ten_take3_page5(http_request_page5, list_of_ten_strings):
 class TestRecipeSearch:
     @pytest.fixture
     def recipe_search_group(self):
-        recipe1= Recipe.objects.create(title='cat',
-                                     description_free_text='cat',
-                                     ingredients_free_text='cat',
-                                     instructions_free_text='cat',
-                                     original_website_link='www.cat.com')
+        recipe1 = Recipe.objects.create(title='cat',
+                                        description_free_text='cat',
+                                        ingredients_free_text='cat',
+                                        instructions_free_text='cat',
+                                        original_website_link='www.cat.com')
         recipe2 = Recipe.objects.create(title='dogcat',
                                         description_free_text='cat',
                                         ingredients_free_text='cat',
@@ -150,14 +150,14 @@ class TestRecipeSearch:
 
     @pytest.fixture
     def search_query_none(self):
-        rf=RequestFactory()
-        request=rf.get('/')
+        rf = RequestFactory()
+        request = rf.get('/')
         return request
 
     @pytest.fixture
     def search_query_bird(self):
-        rf=RequestFactory()
-        request=rf.get('/?search_query=bird')
+        rf = RequestFactory()
+        request = rf.get('/?search_query=bird')
         return request
 
     @pytest.fixture
@@ -178,7 +178,7 @@ class TestRecipeSearch:
         request = rf.get('/?search_query=fox')
         return request
 
-    #search with no query should match all but the deleted item
+    # search with no query should match all but the deleted item
     @pytest.mark.django_db
     def test_search_no_search(self, recipe_search_group, search_query_none):
         recipes_found, query_term = search_recipes(search_query_none)
@@ -216,26 +216,95 @@ class TestRecipeSearch:
 
 # forms
 # try to submit a form with all fields proper
+def test_form_all_field_ok():
+    form_data = {
+        'title': 'Good Food Recipe!',
+        'description_free_text': 'This is just a great recipe',
+        'ingredients_free_text': 'Good ingredient 1 \n Good ingredient 2 \n Good ingredient 3',
+        'instructions_free_text': 'Do this \n Then do this \n then do this.',
+        'servings_per_nominal': 4
+    }
+    form = RecipeForm(data=form_data)
+    assert form.is_valid()
+
 # Try to sumit a form with only title
+def test_form_only_title():
+    form_data = {
+        'title': 'Good Food Recipe! But Lazy.',
+    }
+    form = RecipeForm(data=form_data)
+    assert form.is_valid()
+
 # try to submit blank
+def test_form_all_field_blank():
+    form_data = {
+        'title': '',
+        'description_free_text': '',
+        'ingredients_free_text': '',
+        'instructions_free_text': ''
+    }
+    form = RecipeForm(data=form_data)
+    assert not form.is_valid()
+
 # try to submit all fields except title
+def test_form_all_but_title():
+    form_data = {
+        'title': '',
+        'description_free_text': 'This is just a great recipe',
+        'ingredients_free_text': 'Good ingredient 1 \n Good ingredient 2 \n Good ingredient 3',
+        'instructions_free_text': 'Do this \n Then do this \n then do this.',
+        'servings_per_nominal': '4'
+    }
+    form = RecipeForm(data=form_data)
+    assert not form.is_valid()
+
 # try to submit non-numeric to numeric.
+def test_form_all_good_but_bad_number():
+    form_data = {
+        'title': 'Good Food Recipe!',
+        'description_free_text': 'This is just a great recipe',
+        'ingredients_free_text': 'Good ingredient 1 \n Good ingredient 2 \n Good ingredient 3',
+        'instructions_free_text': 'Do this \n Then do this \n then do this.',
+        'servings_per_nominal': 'seven'
+    }
+    form = RecipeForm(data=form_data)
+    assert not form.is_valid()
 # Try float vs decimal
+def test_form_all_field_ok_float():
+    form_data = {
+        'title': 'Good Food Recipe!',
+        'description_free_text': 'This is just a great recipe',
+        'ingredients_free_text': 'Good ingredient 1 \n Good ingredient 2 \n Good ingredient 3',
+        'instructions_free_text': 'Do this \n Then do this \n then do this.',
+        'servings_per_nominal': '3.5'
+    }
+    form = RecipeForm(data=form_data)
+    assert form.is_valid()
 # Try a negative number
+def test_form_all_field_no_negatives():
+    form_data = {
+        'title': 'Good Food Recipe!',
+        'description_free_text': 'This is just a great recipe',
+        'ingredients_free_text': 'Good ingredient 1 \n Good ingredient 2 \n Good ingredient 3',
+        'instructions_free_text': 'Do this \n Then do this \n then do this.',
+        'servings_per_nominal': '-3'
+    }
+    form = RecipeForm(data=form_data)
+    assert not form.is_valid()
 
 # views
 # have a db with a valid recipe, deleted recipe, Then also generate a valid UUID at random
 # Scrub function should return a recipe object, Raise Error, Raise Error respectively
 
 # attempt to access add-recipe while logged out
-# attemp to access add-recipe while logged in
+# attempt to access add-recipe while logged in
 # attempt to post a valid form
 # attempt to post an invalid form
 
 # attempt to access view-recipe while logged out valid recipe
-# attemp to access view-recipe while logged in valid recipe
+# attempt to access view-recipe while logged in valid recipe
 # attempt to delete recip while logged out invalid recipe
-# attemp to delete recipe while logged in invalid recipe
+# attempt to delete recipe while logged in invalid recipe
 
 # attempt to access edit recipe while logged out valid recipe
 # attempt to access edit recipe while logged in valid recipe
@@ -247,9 +316,9 @@ class TestRecipeSearch:
 # attempt to post update to recipe blank title while logged in valid recipe
 
 # attempt to delete recipe while logged out valid recipe
-# attemp to delete recipe while logged in valid recipe
+# attempt to delete recipe while logged in valid recipe
 # attempt to delete recipe while logged out invalid recipe
-# attemp to delete recipe while logged in invalid recipe
+# attempt to delete recipe while logged in invalid recipe
 
 # attempt to view home logged in
 # attempt to view home logged out
