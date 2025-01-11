@@ -108,11 +108,111 @@ def test_paginate_ten_take3_page5(http_request_page5, list_of_ten_strings):
 
 
 # Test search function somehow.
-# Get a database with ~5-10 items loaded
-# search a term that only matches one of them should only get that one
-# search a term that matches all but one each in a different field should get all but that one
-# search a term that matches none should get none
-# search a term that matches 2 should get those 2
+class TestRecipeSearch:
+    @pytest.fixture
+    def recipe_search_group(self):
+        recipe1= Recipe.objects.create(title='cat',
+                                     description_free_text='cat',
+                                     ingredients_free_text='cat',
+                                     instructions_free_text='cat',
+                                     original_website_link='www.cat.com')
+        recipe2 = Recipe.objects.create(title='dogcat',
+                                        description_free_text='cat',
+                                        ingredients_free_text='cat',
+                                        instructions_free_text='cat',
+                                        original_website_link='www.fox.com')
+        recipe3 = Recipe.objects.create(title='cat 2',
+                                        description_free_text='dog',
+                                        ingredients_free_text='cat',
+                                        instructions_free_text='cat',
+                                        original_website_link='www.fox.com')
+        recipe4 = Recipe.objects.create(title='cat 3',
+                                        description_free_text='cat',
+                                        ingredients_free_text='dog',
+                                        instructions_free_text='cat',
+                                        original_website_link='www.cat.com')
+        recipe5 = Recipe.objects.create(title='cat 4',
+                                        description_free_text='cat',
+                                        ingredients_free_text='cat',
+                                        instructions_free_text='dog',
+                                        original_website_link='www.bird.com')
+        recipe6 = Recipe.objects.create(title='cat 5',
+                                        description_free_text='cat',
+                                        ingredients_free_text='cat',
+                                        instructions_free_text='cat',
+                                        original_website_link='www.dog.com')
+        recipe7 = Recipe.objects.create(title='cat 6',
+                                        description_free_text='cat',
+                                        ingredients_free_text='elephant',
+                                        instructions_free_text='fox',
+                                        original_website_link='www.dog.com',
+                                        deleted_by_user=True)
+
+    @pytest.fixture
+    def search_query_none(self):
+        rf=RequestFactory()
+        request=rf.get('/')
+        return request
+
+    @pytest.fixture
+    def search_query_bird(self):
+        rf=RequestFactory()
+        request=rf.get('/?search_query=bird')
+        return request
+
+    @pytest.fixture
+    def search_query_dog(self):
+        rf = RequestFactory()
+        request = rf.get('/?search_query=dog')
+        return request
+
+    @pytest.fixture
+    def search_query_elephant(self):
+        rf = RequestFactory()
+        request = rf.get('/?search_query=elephant')
+        return request
+
+    @pytest.fixture
+    def search_query_fox(self):
+        rf = RequestFactory()
+        request = rf.get('/?search_query=fox')
+        return request
+
+    #search with no query should match all but the deleted item
+    @pytest.mark.django_db
+    def test_search_no_search(self, recipe_search_group, search_query_none):
+        recipes_found, query_term = search_recipes(search_query_none)
+        assert query_term == ''
+        assert recipes_found.count() == 6
+
+    # search a term that only matches one of them should only get that one
+    @pytest.mark.django_db
+    def test_search_bird(self, recipe_search_group, search_query_bird):
+        recipes_found, query_term = search_recipes(search_query_bird)
+        assert query_term == 'bird'
+        assert recipes_found.count() == 1
+
+    # search a term that matches all but one each in a different field should get all but that one
+    @pytest.mark.django_db
+    def test_search_dog(self, recipe_search_group, search_query_dog):
+        recipes_found, query_term = search_recipes(search_query_dog)
+        assert query_term == 'dog'
+        assert recipes_found.count() == 5
+
+    # search a term that matches none (or only deleted items) should get none
+    @pytest.mark.django_db
+    def test_search_elephant(self, recipe_search_group, search_query_elephant):
+        recipes_found, query_term = search_recipes(search_query_elephant)
+        assert query_term == 'elephant'
+        assert recipes_found.count() == 0
+
+    # search a term that matches 2 should get those 2
+    @pytest.mark.django_db
+    def test_search_fox(self, recipe_search_group, search_query_fox):
+        recipes_found, query_term = search_recipes(search_query_fox)
+        assert query_term == 'fox'
+        assert recipes_found.count() == 2
+
 
 # forms
 # try to submit a form with all fields proper

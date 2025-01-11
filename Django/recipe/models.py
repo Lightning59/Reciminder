@@ -51,7 +51,7 @@ def search_recipes(request: HttpRequest) -> tuple[QuerySet, str | None]:
         recipes = Recipe.objects.filter(deleted_by_user=False).filter(
             Q(title__icontains=search_query) |
             Q(description_free_text__icontains=search_query) |
-            Q(ingredients_free_text=search_query) |
+            Q(instructions_free_text__icontains=search_query) |
             Q(ingredients_free_text__icontains=search_query) |
             Q(original_website_link__icontains=search_query))
     else:
