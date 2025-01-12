@@ -1,4 +1,6 @@
 import pytest
+import uuid6
+from pytest_django.asserts import assertRaisesMessage
 from django.test import RequestFactory
 from .views import *
 from .models import *
@@ -293,8 +295,66 @@ def test_form_all_field_no_negatives():
     assert not form.is_valid()
 
 # views
+@pytest.fixture
+def recipe_scrub_search_group():
+    recipe1 = Recipe.objects.create(title='cat',
+                                        description_free_text='cat',
+                                        ingredients_free_text='cat',
+                                        instructions_free_text='cat',
+                                        original_website_link='www.cat.com')
+
+    recipe2 = Recipe.objects.create(title='cat 6',
+                                        description_free_text='cat',
+                                        ingredients_free_text='elephant',
+                                        instructions_free_text='fox',
+                                        original_website_link='www.dog.com',
+                                        deleted_by_user=True)
+
+@pytest.fixture
+def random_current_uuid():
+    return uuid6.uuid7()
+
+
 # have a db with a valid recipe, deleted recipe, Then also generate a valid UUID at random
 # Scrub function should return a recipe object, Raise Error, Raise Error respectively
+@pytest.mark.django_db
+def test_scrub_vaild_recipe(recipe_scrub_search_group):
+    valid_recipe=Recipe.objects.get(title='cat')
+    valid_key=valid_recipe.pk
+    recipe=Recipe.objects.get(title='cat')
+    srubbed_recipe = scrub_invalid_recipe_pk(valid_key)
+    assert recipe == srubbed_recipe
+
+
+@pytest.mark.django_db
+def test_scrub_vaild_recipe_deleted(recipe_scrub_search_group):
+    test_recipe=Recipe.objects.get(title='cat 6')
+    test_key=test_recipe.pk
+    exmessage=''
+    extype=None
+    try:
+        scrub_invalid_recipe_pk(test_key)
+    except Exception as e:
+        extype = type(e)
+        exmessage = str(e)
+    assert exmessage == "Recipe was deleted"
+    assert extype is Http404
+
+
+@pytest.mark.django_db
+def test_scrub_vaild_recipe_randomuuid(recipe_scrub_search_group,random_current_uuid):
+    test_key=random_current_uuid
+    test_recipe=str(test_key)
+    exmessage=''
+    extype=None
+    try:
+        scrub_invalid_recipe_pk(test_key)
+    except Exception as e:
+        extype = type(e)
+        exmessage = str(e)
+    assert exmessage == "Recipe does not exist"
+    assert extype is Http404
+
 
 # attempt to access add-recipe while logged out
 # attempt to access add-recipe while logged in
