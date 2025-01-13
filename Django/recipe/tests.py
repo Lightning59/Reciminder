@@ -1,5 +1,5 @@
 import pytest
-from pytest_django.asserts import assertRedirects, assertTemplateUsed, assertRaisesMessage
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 import uuid6
 from django.test import RequestFactory
 from django.urls import reverse
@@ -110,6 +110,7 @@ def test_paginate_ten_take3_page5(http_request_page5, list_of_ten_strings):
     assert queryset.object_list == ['j']
     assert total_pages == 4
 
+
 @pytest.fixture
 def recipe_search_group():
     recipe1 = Recipe.objects.create(title='cat',
@@ -148,6 +149,7 @@ def recipe_search_group():
                                     instructions_free_text='fox',
                                     original_website_link='www.dog.com',
                                     deleted_by_user=True)
+
 
 # Test search function somehow.
 class TestRecipeSearch:
@@ -231,6 +233,7 @@ def test_form_all_field_ok():
     form = RecipeForm(data=form_data)
     assert form.is_valid()
 
+
 # Try to sumit a form with only title
 def test_form_only_title():
     form_data = {
@@ -238,6 +241,7 @@ def test_form_only_title():
     }
     form = RecipeForm(data=form_data)
     assert form.is_valid()
+
 
 # try to submit blank
 def test_form_all_field_blank():
@@ -249,6 +253,7 @@ def test_form_all_field_blank():
     }
     form = RecipeForm(data=form_data)
     assert not form.is_valid()
+
 
 # try to submit all fields except title
 def test_form_all_but_title():
@@ -262,6 +267,7 @@ def test_form_all_but_title():
     form = RecipeForm(data=form_data)
     assert not form.is_valid()
 
+
 # try to submit non-numeric to numeric.
 def test_form_all_good_but_bad_number():
     form_data = {
@@ -273,6 +279,8 @@ def test_form_all_good_but_bad_number():
     }
     form = RecipeForm(data=form_data)
     assert not form.is_valid()
+
+
 # Try float vs decimal
 def test_form_all_field_ok_float():
     form_data = {
@@ -284,6 +292,8 @@ def test_form_all_field_ok_float():
     }
     form = RecipeForm(data=form_data)
     assert form.is_valid()
+
+
 # Try a negative number
 def test_form_all_field_no_negatives():
     form_data = {
@@ -296,21 +306,23 @@ def test_form_all_field_no_negatives():
     form = RecipeForm(data=form_data)
     assert not form.is_valid()
 
+
 # views
 @pytest.fixture
 def recipe_scrub_search_group():
     recipe1 = Recipe.objects.create(title='cat',
-                                        description_free_text='cat',
-                                        ingredients_free_text='cat',
-                                        instructions_free_text='cat',
-                                        original_website_link='www.cat.com')
+                                    description_free_text='cat',
+                                    ingredients_free_text='cat',
+                                    instructions_free_text='cat',
+                                    original_website_link='www.cat.com')
 
     recipe2 = Recipe.objects.create(title='cat 6',
-                                        description_free_text='cat',
-                                        ingredients_free_text='elephant',
-                                        instructions_free_text='fox',
-                                        original_website_link='www.dog.com',
-                                        deleted_by_user=True)
+                                    description_free_text='cat',
+                                    ingredients_free_text='elephant',
+                                    instructions_free_text='fox',
+                                    original_website_link='www.dog.com',
+                                    deleted_by_user=True)
+
 
 @pytest.fixture
 def random_current_uuid():
@@ -321,19 +333,19 @@ def random_current_uuid():
 # Scrub function should return a recipe object, Raise Error, Raise Error respectively
 @pytest.mark.django_db
 def test_scrub_vaild_recipe(recipe_scrub_search_group):
-    valid_recipe=Recipe.objects.get(title='cat')
-    valid_key=valid_recipe.pk
-    recipe=Recipe.objects.get(title='cat')
+    valid_recipe = Recipe.objects.get(title='cat')
+    valid_key = valid_recipe.pk
+    recipe = Recipe.objects.get(title='cat')
     srubbed_recipe = scrub_invalid_recipe_pk(valid_key)
     assert recipe == srubbed_recipe
 
 
 @pytest.mark.django_db
 def test_scrub_vaild_recipe_deleted(recipe_scrub_search_group):
-    test_recipe=Recipe.objects.get(title='cat 6')
-    test_key=test_recipe.pk
-    exmessage=''
-    extype=None
+    test_recipe = Recipe.objects.get(title='cat 6')
+    test_key = test_recipe.pk
+    exmessage = ''
+    extype = None
     try:
         scrub_invalid_recipe_pk(test_key)
     except Exception as e:
@@ -344,11 +356,11 @@ def test_scrub_vaild_recipe_deleted(recipe_scrub_search_group):
 
 
 @pytest.mark.django_db
-def test_scrub_vaild_recipe_randomuuid(recipe_scrub_search_group,random_current_uuid):
-    test_key=random_current_uuid
-    test_recipe=str(test_key)
-    exmessage=''
-    extype=None
+def test_scrub_vaild_recipe_randomuuid(recipe_scrub_search_group, random_current_uuid):
+    test_key = random_current_uuid
+    test_recipe = str(test_key)
+    exmessage = ''
+    extype = None
     try:
         scrub_invalid_recipe_pk(test_recipe)
     except Exception as e:
@@ -361,7 +373,8 @@ def test_scrub_vaild_recipe_randomuuid(recipe_scrub_search_group,random_current_
 # attempt to access add-recipe while logged out
 def test_add_recipe_while_logged_out(client):
     response = client.get(reverse('add-recipe'))
-    assertRedirects(response,reverse('login')+'?next=/recipe/addrecipe/', status_code=302, target_status_code=200)
+    assertRedirects(response, reverse('login') + '?next=/recipe/addrecipe/', status_code=302, target_status_code=200)
+
 
 # attempt to access add-recipe while logged in
 @pytest.mark.django_db
@@ -370,6 +383,7 @@ def test_add_recipe_when_logged_in(client, basic_user):
     response = client.get(reverse('add-recipe'))
     assert response.status_code == 200
     assertTemplateUsed(response, 'add-recipe.html')
+
 
 # attempt to post a valid form
 @pytest.mark.django_db
@@ -380,6 +394,7 @@ def test_post_recipe(client, basic_user):
     assertRedirects(response, reverse('home'), status_code=302, target_status_code=200)
     num_recipes = Recipe.objects.count()
     assert num_recipes == 1
+
 
 # attempt to post an invalid form
 @pytest.mark.django_db
@@ -397,86 +412,167 @@ def test_post_recipe_no_title(client, basic_user):
 # attempt to access view-recipe while logged out valid recipe
 @pytest.mark.django_db
 def test_view_recipe_logged_out(client, recipe_search_group):
-    recipe_key= str(Recipe.objects.get(title='cat').pk)
-    this_reverse=reverse('recipe', args=[recipe_key])
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('recipe', args=[recipe_key])
     response = client.get(this_reverse)
-    assertRedirects(response, reverse('login')+'?next='+this_reverse, status_code=302, target_status_code=200)
+    assertRedirects(response, reverse('login') + '?next=' + this_reverse, status_code=302, target_status_code=200)
+
 
 # attempt to access view-recipe while logged in valid recipe
 @pytest.mark.django_db
 def test_view_recipe_logged_in(client, recipe_search_group, basic_user):
     client.force_login(basic_user)
-    recipe_key= str(Recipe.objects.get(title='cat').pk)
-    this_reverse=reverse('recipe', args=[recipe_key])
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('recipe', args=[recipe_key])
     response = client.get(this_reverse)
     assert response.status_code == 200
     assertTemplateUsed(response, 'individual_recipe.html')
 
-#try to access a deleted recipe
+
+# try to access a deleted recipe
 @pytest.mark.django_db
 def test_view_deleted_recipe_logged_in(client, recipe_search_group, basic_user):
     client.force_login(basic_user)
-    recipe_key= str(Recipe.objects.get(title='cat 6').pk)
-    this_reverse=reverse('recipe', args=[recipe_key])
-    response=client.get(this_reverse)
+    recipe_key = str(Recipe.objects.get(title='cat 6').pk)
+    this_reverse = reverse('recipe', args=[recipe_key])
+    response = client.get(this_reverse)
     assert response.status_code == 404
 
-#try to access a random non-exsiting recipe
+
+# try to access a random non-exsiting recipe
 @pytest.mark.django_db
 def test_view_fake_recipe_logged_in(client, recipe_search_group, basic_user, random_current_uuid):
     client.force_login(basic_user)
-    recipe_key= str(random_current_uuid)
-    this_reverse=reverse('recipe', args=[recipe_key])
-    response=client.get(this_reverse)
+    recipe_key = str(random_current_uuid)
+    this_reverse = reverse('recipe', args=[recipe_key])
+    response = client.get(this_reverse)
     assert response.status_code == 404
 
 
-#Delete Recipes
+# Delete Recipes
 # attempt to delete recipe while logged out invalid recipe
 @pytest.mark.django_db
 def test_delete_fake_recipe_logged_out(client, recipe_search_group, random_current_uuid):
-    recipe_key= str(random_current_uuid)
-    this_reverse=reverse('delete-recipe', args=[recipe_key])
-    response=client.get(this_reverse)
+    recipe_key = str(random_current_uuid)
+    this_reverse = reverse('delete-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
     assert response.status_code == 302
+
 
 # attempt to delete recipe while logged in invalid recipe
 @pytest.mark.django_db
 def test_delete_fake_recipe_logged_in(client, recipe_search_group, basic_user, random_current_uuid):
     client.force_login(basic_user)
-    recipe_key= str(random_current_uuid)
-    this_reverse=reverse('delete-recipe', args=[recipe_key])
-    response=client.get(this_reverse)
+    recipe_key = str(random_current_uuid)
+    this_reverse = reverse('delete-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
     assert response.status_code == 404
+
 
 # attempt to delete recipe while logged out valid recipe
 @pytest.mark.django_db
 def test_delete_real_recipe_logged_out(client, recipe_search_group):
-    recipe_key= str(Recipe.objects.get(title='cat').pk)
-    this_reverse=reverse('delete-recipe', args=[recipe_key])
-    response=client.get(this_reverse)
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('delete-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
     assert response.status_code == 302
     assert Recipe.objects.filter(deleted_by_user=False).count() == 6
+
 
 # attempt to delete recipe while logged in valid recipe
 @pytest.mark.django_db
 def test_delete_real_recipe_logged_in(client, recipe_search_group, basic_user):
     client.force_login(basic_user)
-    recipe_key= str(Recipe.objects.get(title='cat').pk)
-    this_reverse=reverse('delete-recipe', args=[recipe_key])
-    response=client.get(this_reverse)
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('delete-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
     assertRedirects(response, reverse('home'), status_code=302, target_status_code=200)
     assert Recipe.objects.filter(deleted_by_user=False).count() == 5
 
+
+# Edit Recipe
 # attempt to access edit recipe while logged out valid recipe
+@pytest.mark.django_db
+def test_edit_real_recipe_logged_out(client, recipe_search_group):
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('edit-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
+    assert response.status_code == 302
+
+
 # attempt to access edit recipe while logged in valid recipe
+@pytest.mark.django_db
+def test_access_edit_real_recipe_logged_in(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('edit-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'add-recipe.html')
+
+
 # attempt to access edit recipe while logged out invalid recipe
+@pytest.mark.django_db
+def test_edit_fake_recipe_logged_out(client, recipe_search_group, random_current_uuid):
+    recipe_key = str(random_current_uuid)
+    this_reverse = reverse('edit-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
+    assert response.status_code == 302
+
+
 # attempt to access edit recipe while logged in invalid recipe
+@pytest.mark.django_db
+def test_edit_fake_recipe_logged_in(client, recipe_search_group, basic_user, random_current_uuid):
+    client.force_login(basic_user)
+    recipe_key = str(random_current_uuid)
+    this_reverse = reverse('edit-recipe', args=[recipe_key])
+    response = client.get(this_reverse)
+    assert response.status_code == 404
+
+
 # attempt to post update to recipe while logged in valid recipe
-# attempt to post update to recipe while logged out valid recipe
-# attempt to post update to recipe blank title while logged out valid recipe
+@pytest.mark.django_db
+def test_post_recipe_update_addto_title(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('edit-recipe', args=[recipe_key])
+    response = client.post(this_reverse, data={'title': 'fishcat',
+                                               'description_free_text': 'cat',
+                                               'ingredients_free_text': 'cat',
+                                               'instructions_free_text': 'cat',
+                                               'original_website_link': 'www.cat.com'})
+    assertRedirects(response, reverse('recipe', args=[recipe_key]), status_code=302, target_status_code=200)
+    recipe = Recipe.objects.get(pk=recipe_key)
+    assert recipe.title == 'fishcat'
+
+
 # attempt to post update to recipe blank title while logged in valid recipe
+@pytest.mark.django_db
+def test_post_recipe_update_bad_title(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    recipe_key = str(Recipe.objects.get(title='cat').pk)
+    this_reverse = reverse('edit-recipe', args=[recipe_key])
+    response = client.post(this_reverse, data={'title': '',
+                                               'description_free_text': 'cat',
+                                               'ingredients_free_text': 'cat',
+                                               'instructions_free_text': 'cat',
+                                               'original_website_link': 'www.cat.com'})
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'add-recipe.html')
+    recipe = Recipe.objects.get(pk=recipe_key)
+    assert recipe.title == 'cat'
 
 
 # attempt to view home logged in
+@pytest.mark.django_db
+def test_view_home_logged_in(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    response = client.get(reverse('home'))
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'logged_in_temp.html')
+
 # attempt to view home logged out
+@pytest.mark.django_db
+def test_view_home_logged_out(client):
+    response = client.get(reverse('home'))
+    assertRedirects(response, reverse('login')+'?next=/recipe/home/', status_code=302, target_status_code=200)
