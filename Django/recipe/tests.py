@@ -1,10 +1,12 @@
 import pytest
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 import uuid6
-from pytest_django.asserts import assertRaisesMessage
 from django.test import RequestFactory
+from django.urls import reverse
 from .views import *
 from .models import *
 from .forms import *
+from users.test_fixtures_users import *
 
 
 # models
@@ -348,7 +350,7 @@ def test_scrub_vaild_recipe_randomuuid(recipe_scrub_search_group,random_current_
     exmessage=''
     extype=None
     try:
-        scrub_invalid_recipe_pk(test_key)
+        scrub_invalid_recipe_pk(test_recipe)
     except Exception as e:
         extype = type(e)
         exmessage = str(e)
@@ -357,12 +359,43 @@ def test_scrub_vaild_recipe_randomuuid(recipe_scrub_search_group,random_current_
 
 
 # attempt to access add-recipe while logged out
+def test_add_recipe_while_logged_out(client):
+    response = client.get(reverse('add-recipe'))
+    assertRedirects(response,reverse('login')+'?next=/recipe/addrecipe/', status_code=302, target_status_code=200)
+
 # attempt to access add-recipe while logged in
+@pytest.mark.django_db
+def test_add_recipe_when_logged_in(client, basic_user):
+    client.force_login(basic_user)
+    response = client.get(reverse('add-recipe'))
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'add-recipe.html')
+
 # attempt to post a valid form
+@pytest.mark.django_db
+def test_post_recipe(client, basic_user):
+    client.force_login(basic_user)
+    response = client.post(reverse('add-recipe'), data={'title': 'Good Recipe',
+                                                        'description_free_text': 'This recipe is good'})
+    assertRedirects(response, reverse('home'), status_code=302, target_status_code=200)
+    num_recipes = Recipe.objects.count()
+    assert num_recipes == 1
+
 # attempt to post an invalid form
+@pytest.mark.django_db
+def test_post_recipe_no_title(client, basic_user):
+    client.force_login(basic_user)
+    response = client.post(reverse('add-recipe'), data={'title': '',
+                                                        'description_free_text': 'This recipe is good'})
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'add-recipe.html')
+    num_recipes = Recipe.objects.count()
+    assert num_recipes == 0
 
 # attempt to access view-recipe while logged out valid recipe
 # attempt to access view-recipe while logged in valid recipe
+
+
 # attempt to delete recip while logged out invalid recipe
 # attempt to delete recipe while logged in invalid recipe
 
