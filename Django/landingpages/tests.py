@@ -1,12 +1,10 @@
 import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed, assertContains
-from users.models import User
+from users.test_fixtures_users import *
 
 
-@pytest.fixture
-def basic_user():
-    return User.objects.create_user(username='test', password='kdflsafjiewl')
+
 
 
 class TestMainGroup:

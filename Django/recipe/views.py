@@ -1,14 +1,25 @@
 from django.shortcuts import render, redirect
 from recipe.forms import RecipeForm
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
-from django.http import Http404
-from .models import Recipe
+from django.http import Http404, HttpRequest, HttpResponse
+from .models import *
+
+
+def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
+    """Will return the requested recip unless it doesn't exist or was deleted."""
+    try:
+        recipe = Recipe.objects.get(id=recipe_pk)
+    except Recipe.DoesNotExist:
+        raise Http404("Recipe does not exist")
+    if recipe.deleted_by_user:
+        raise Http404("Recipe was deleted")
+    return recipe
 
 
 @login_required(login_url='login')
-def add_recipe(request):
+def add_recipe(request: HttpRequest) -> HttpResponse:
+    """Allows the logged-in user to add a recipe sends them to the home screen if successful otherwise back to
+     add-recipe. redirects logged-out user to the login screen."""
     form = RecipeForm()
     context = {'form': form}
     if request.method == 'POST':
@@ -20,25 +31,20 @@ def add_recipe(request):
 
 
 @login_required(login_url='login')
-def view_recipe(request, pk):
-    recipe = Recipe.objects.get(id=pk)
-    if recipe.deleted_by_user:
-        # TODO play around with this in a prod environment I think I can explicitly say WAS DELTED here without leaking info but need to check.
-        raise Http404("Recipe does not exist or was deleted")
-    context={
+def view_recipe(request: HttpRequest, pk: str) -> HttpResponse:
+    """Displays a specific recipe by its uuid7 pk, if the recipe has the deleted flag or never existed to begin with
+    raise a 404 not found error"""
+    recipe = scrub_invalid_recipe_pk(pk)
+    context = {
         'recipe': recipe,
     }
     return render(request, 'individual_recipe.html', context)
 
 
 @login_required(login_url='login')
-def edit_recipe(request, pk):
-
-    recipe = Recipe.objects.get(id=pk)
-    if recipe.deleted_by_user:
-        # TODO play around with this in a prod environment I think I can explicitly say WAS DELTED here without leaking info but need to check.
-        raise Http404("Recipe does not exist or was deleted")
-
+def edit_recipe(request: HttpRequest, pk: str) -> HttpResponse:
+    """Allows logged-in users to edit all fields in a recipe (except pk, created-date, modified-date, and is deleted)"""
+    recipe = scrub_invalid_recipe_pk(pk)
     form = RecipeForm(instance=recipe)
     context = {
         'recipe': recipe,
@@ -54,55 +60,29 @@ def edit_recipe(request, pk):
 
 
 @login_required(login_url='login')
-def delete_recipe(request, pk):
-    # TODO: These need to implement flash messages to help the user now if it was successful or not
-    recipe = Recipe.objects.get(id=pk)
+def delete_recipe(request: HttpRequest, pk: str) -> HttpResponse:
+    """Allows logged-in user to flag the recipe as deleted in the DB. Does not actually delete the recipe from the
+     database but flags it as deleted."""
+    recipe = scrub_invalid_recipe_pk(pk)
     recipe.deleted_by_user = True
     recipe.save()
     return redirect('home')
 
 
-@login_required
-def logged_in_home(request):
+# My Current guess for a good default results per page is ~30-40 - anything lower is still experimentation
+@login_required(login_url='login')
+def logged_in_home(request: HttpRequest, pagination_res_per_page: int = 5) -> HttpResponse:
+    """Displays paginated all recipes the user can see or filters down based on simple search algorithm
+    Currently just displays all recipes until searched as all users can currently see all recipes
+    Accepts pagination as keyword argument with prod default (allows lower to be used in testing)"""
     user = request.user
     all_recipes, search_query = search_recipes(request)
-    # My Current guess for a good deafult results for page is 30 - anything lower is still experimentation
-    this_page_recipes, total_pages = paginate_recipes(request, all_recipes, 4)
-    page_range=list(range(1, total_pages+1))
+
+    this_page_recipes, total_pages = paginate_recipes(request, all_recipes, pagination_res_per_page)
+    page_range = list(range(1, total_pages + 1))
     context = {'user': user,
                'recipes': this_page_recipes,
                'page_range': page_range,
                'total_pages': total_pages,
                'search_query': search_query}
     return render(request, 'logged_in_temp.html', context)
-
-
-def paginate_recipes(request, recipes, num_results_per_page):
-    curr_page = request.GET.get('page')
-    paginator = Paginator(recipes, num_results_per_page)
-    total_pages = paginator.num_pages
-    try:
-        page_recipes = paginator.page(curr_page)
-    except PageNotAnInteger:
-        curr_page = 1
-        page_recipes = paginator.page(curr_page)
-    except EmptyPage:
-        curr_page = total_pages
-        page_recipes = paginator.page(curr_page)
-    return page_recipes, total_pages
-
-
-def search_recipes(request):
-    if request.GET.get('search_query'):
-        search_query = request.GET.get('search_query')
-        recipes = Recipe.objects.filter(deleted_by_user=False).filter(
-                                        Q(title__icontains=search_query) |
-                                        Q(description_free_text__icontains=search_query)|
-                                        Q(ingredients_free_text=search_query)|
-                                        Q(ingredients_free_text__icontains=search_query)|
-                                        Q(original_website_link__icontains=search_query))
-    else:
-        recipes = Recipe.objects.filter(deleted_by_user=False).all()
-        search_query = ''
-
-    return recipes, search_query
