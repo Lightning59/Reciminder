@@ -1,5 +1,5 @@
 import pytest
-from pytest_django.asserts import assertRedirects, assertTemplateUsed
+from pytest_django.asserts import assertRedirects, assertTemplateUsed, assertRaisesMessage
 import uuid6
 from django.test import RequestFactory
 from django.urls import reverse
@@ -110,47 +110,47 @@ def test_paginate_ten_take3_page5(http_request_page5, list_of_ten_strings):
     assert queryset.object_list == ['j']
     assert total_pages == 4
 
+@pytest.fixture
+def recipe_search_group():
+    recipe1 = Recipe.objects.create(title='cat',
+                                    description_free_text='cat',
+                                    ingredients_free_text='cat',
+                                    instructions_free_text='cat',
+                                    original_website_link='www.cat.com')
+    recipe2 = Recipe.objects.create(title='dogcat',
+                                    description_free_text='cat',
+                                    ingredients_free_text='cat',
+                                    instructions_free_text='cat',
+                                    original_website_link='www.fox.com')
+    recipe3 = Recipe.objects.create(title='cat 2',
+                                    description_free_text='dog',
+                                    ingredients_free_text='cat',
+                                    instructions_free_text='cat',
+                                    original_website_link='www.fox.com')
+    recipe4 = Recipe.objects.create(title='cat 3',
+                                    description_free_text='cat',
+                                    ingredients_free_text='dog',
+                                    instructions_free_text='cat',
+                                    original_website_link='www.cat.com')
+    recipe5 = Recipe.objects.create(title='cat 4',
+                                    description_free_text='cat',
+                                    ingredients_free_text='cat',
+                                    instructions_free_text='dog',
+                                    original_website_link='www.bird.com')
+    recipe6 = Recipe.objects.create(title='cat 5',
+                                    description_free_text='cat',
+                                    ingredients_free_text='cat',
+                                    instructions_free_text='cat',
+                                    original_website_link='www.dog.com')
+    recipe7 = Recipe.objects.create(title='cat 6',
+                                    description_free_text='cat',
+                                    ingredients_free_text='elephant',
+                                    instructions_free_text='fox',
+                                    original_website_link='www.dog.com',
+                                    deleted_by_user=True)
 
 # Test search function somehow.
 class TestRecipeSearch:
-    @pytest.fixture
-    def recipe_search_group(self):
-        recipe1 = Recipe.objects.create(title='cat',
-                                        description_free_text='cat',
-                                        ingredients_free_text='cat',
-                                        instructions_free_text='cat',
-                                        original_website_link='www.cat.com')
-        recipe2 = Recipe.objects.create(title='dogcat',
-                                        description_free_text='cat',
-                                        ingredients_free_text='cat',
-                                        instructions_free_text='cat',
-                                        original_website_link='www.fox.com')
-        recipe3 = Recipe.objects.create(title='cat 2',
-                                        description_free_text='dog',
-                                        ingredients_free_text='cat',
-                                        instructions_free_text='cat',
-                                        original_website_link='www.fox.com')
-        recipe4 = Recipe.objects.create(title='cat 3',
-                                        description_free_text='cat',
-                                        ingredients_free_text='dog',
-                                        instructions_free_text='cat',
-                                        original_website_link='www.cat.com')
-        recipe5 = Recipe.objects.create(title='cat 4',
-                                        description_free_text='cat',
-                                        ingredients_free_text='cat',
-                                        instructions_free_text='dog',
-                                        original_website_link='www.bird.com')
-        recipe6 = Recipe.objects.create(title='cat 5',
-                                        description_free_text='cat',
-                                        ingredients_free_text='cat',
-                                        instructions_free_text='cat',
-                                        original_website_link='www.dog.com')
-        recipe7 = Recipe.objects.create(title='cat 6',
-                                        description_free_text='cat',
-                                        ingredients_free_text='elephant',
-                                        instructions_free_text='fox',
-                                        original_website_link='www.dog.com',
-                                        deleted_by_user=True)
 
     @pytest.fixture
     def search_query_none(self):
@@ -392,26 +392,91 @@ def test_post_recipe_no_title(client, basic_user):
     num_recipes = Recipe.objects.count()
     assert num_recipes == 0
 
+
+# View-recipe
 # attempt to access view-recipe while logged out valid recipe
+@pytest.mark.django_db
+def test_view_recipe_logged_out(client, recipe_search_group):
+    recipe_key= str(Recipe.objects.get(title='cat').pk)
+    this_reverse=reverse('recipe', args=[recipe_key])
+    response = client.get(this_reverse)
+    assertRedirects(response, reverse('login')+'?next='+this_reverse, status_code=302, target_status_code=200)
+
 # attempt to access view-recipe while logged in valid recipe
+@pytest.mark.django_db
+def test_view_recipe_logged_in(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    recipe_key= str(Recipe.objects.get(title='cat').pk)
+    this_reverse=reverse('recipe', args=[recipe_key])
+    response = client.get(this_reverse)
+    assert response.status_code == 200
+    assertTemplateUsed(response, 'individual_recipe.html')
+
+#try to access a deleted recipe
+@pytest.mark.django_db
+def test_view_deleted_recipe_logged_in(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    recipe_key= str(Recipe.objects.get(title='cat 6').pk)
+    this_reverse=reverse('recipe', args=[recipe_key])
+    response=client.get(this_reverse)
+    assert response.status_code == 404
+
+#try to access a random non-exsiting recipe
+@pytest.mark.django_db
+def test_view_fake_recipe_logged_in(client, recipe_search_group, basic_user, random_current_uuid):
+    client.force_login(basic_user)
+    recipe_key= str(random_current_uuid)
+    this_reverse=reverse('recipe', args=[recipe_key])
+    response=client.get(this_reverse)
+    assert response.status_code == 404
 
 
-# attempt to delete recip while logged out invalid recipe
+#Delete Recipes
+# attempt to delete recipe while logged out invalid recipe
+@pytest.mark.django_db
+def test_delete_fake_recipe_logged_out(client, recipe_search_group, random_current_uuid):
+    recipe_key= str(random_current_uuid)
+    this_reverse=reverse('delete-recipe', args=[recipe_key])
+    response=client.get(this_reverse)
+    assert response.status_code == 302
+
 # attempt to delete recipe while logged in invalid recipe
+@pytest.mark.django_db
+def test_delete_fake_recipe_logged_in(client, recipe_search_group, basic_user, random_current_uuid):
+    client.force_login(basic_user)
+    recipe_key= str(random_current_uuid)
+    this_reverse=reverse('delete-recipe', args=[recipe_key])
+    response=client.get(this_reverse)
+    assert response.status_code == 404
+
+# attempt to delete recipe while logged out valid recipe
+@pytest.mark.django_db
+def test_delete_real_recipe_logged_out(client, recipe_search_group):
+    recipe_key= str(Recipe.objects.get(title='cat').pk)
+    this_reverse=reverse('delete-recipe', args=[recipe_key])
+    response=client.get(this_reverse)
+    assert response.status_code == 302
+    assert Recipe.objects.filter(deleted_by_user=False).count() == 6
+
+# attempt to delete recipe while logged in valid recipe
+@pytest.mark.django_db
+def test_delete_real_recipe_logged_in(client, recipe_search_group, basic_user):
+    client.force_login(basic_user)
+    recipe_key= str(Recipe.objects.get(title='cat').pk)
+    this_reverse=reverse('delete-recipe', args=[recipe_key])
+    response=client.get(this_reverse)
+    assertRedirects(response, reverse('home'), status_code=302, target_status_code=200)
+    assert Recipe.objects.filter(deleted_by_user=False).count() == 5
 
 # attempt to access edit recipe while logged out valid recipe
 # attempt to access edit recipe while logged in valid recipe
-# attempt to access recipe while logged out invalid recipe
-# attempt to access recipe while logged in invalid recipe
+# attempt to access edit recipe while logged out invalid recipe
+# attempt to access edit recipe while logged in invalid recipe
 # attempt to post update to recipe while logged in valid recipe
 # attempt to post update to recipe while logged out valid recipe
 # attempt to post update to recipe blank title while logged out valid recipe
 # attempt to post update to recipe blank title while logged in valid recipe
 
-# attempt to delete recipe while logged out valid recipe
-# attempt to delete recipe while logged in valid recipe
-# attempt to delete recipe while logged out invalid recipe
-# attempt to delete recipe while logged in invalid recipe
 
 # attempt to view home logged in
 # attempt to view home logged out
