@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
 from django.db.models import Q
@@ -5,6 +6,10 @@ from django.db.models.query import QuerySet
 import uuid6
 from django.http import HttpRequest
 
+
+def validate_positive_float(value):
+    if value < 0:
+        raise ValidationError("Negative values are not allowed")
 
 class Recipe(models.Model):
     """Recipe model captures user recipes."""
@@ -17,7 +22,7 @@ class Recipe(models.Model):
     created=models.DateTimeField(auto_now_add=True)
     modified=models.DateTimeField(auto_now=True)
     deleted_by_user=models.BooleanField(default=False)
-    servings_per_nominal=models.FloatField(null=True, blank=True)
+    servings_per_nominal=models.FloatField(null=True, blank=True, validators=[validate_positive_float])
     original_website_link=models.URLField(null=True, blank=True)
 
     def __str__(self) -> str:
