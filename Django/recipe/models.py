@@ -14,16 +14,36 @@ def validate_positive_float(value):
 class Recipe(models.Model):
     """Recipe model captures user recipes."""
     id = models.UUIDField(primary_key=True, default=uuid6.uuid7, unique=True, editable=False)
+
     # test long recipe title - Came to ~100. So pick 255(256?) as a good permissive limit?
     title=models.CharField(max_length=255, null=False, blank=False)
-    description_free_text=models.TextField(null=True, blank=True)
-    ingredients_free_text=models.TextField(null=True, blank=True)
-    instructions_free_text=models.TextField(null=True, blank=True)
+
     created=models.DateTimeField(auto_now_add=True)
     modified=models.DateTimeField(auto_now=True)
     deleted_by_user=models.BooleanField(default=False)
-    servings_per_nominal=models.FloatField(null=True, blank=True, validators=[validate_positive_float])
+
+    description_free_text = models.TextField(null=True, blank=True)
+    ingredients_free_text = models.TextField(null=True, blank=True)
+    instructions_free_text = models.TextField(null=True, blank=True)
+    notes_free_text = models.TextField(null=True, blank=True)
+    nutrition_free_text = models.TextField(null=True, blank=True)
+
     original_website_link=models.URLField(null=True, blank=True)
+
+    servings_per_nominal = models.FloatField(null=True, blank=True, validators=[validate_positive_float])
+    pre_prep_active_time_minutes=models.PositiveSmallIntegerField(null=True, blank=True)
+    prep_active_time_minutes = models.PositiveSmallIntegerField(null=True, blank=True)
+    cook_active_time_minutes = models.PositiveSmallIntegerField(null=True, blank=True)
+    clean_active_time_minutes = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    pre_prep_passive_time_minutes=models.PositiveIntegerField(null=True, blank=True)
+    cook_passive_time_minutes=models.PositiveSmallIntegerField(null=True, blank=True)
+    after_cook_passive_time_minutes=models.PositiveIntegerField(null=True, blank=True)
+
+    total_active_time_minutes=models.PositiveSmallIntegerField(null=True, blank=True)
+    total_passive_time_minutes=models.PositiveIntegerField(null=True, blank=True)
+    total_overall_time_minutes=models.PositiveIntegerField(null=True, blank=True)
+
 
     def __str__(self) -> str:
         """Just returns the full recipe title as a string."""
