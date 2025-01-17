@@ -15,6 +15,10 @@ def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
         raise Http404("Recipe was deleted")
     return recipe
 
+def process_recipe_create_update_POST(form_object: RecipeForm) -> None:
+    recipe = form_object.save(commit=False)
+    recipe.calc_and_store_times()
+    recipe.save()
 
 @login_required(login_url='login')
 def add_recipe(request: HttpRequest) -> HttpResponse:
@@ -25,7 +29,7 @@ def add_recipe(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = RecipeForm(request.POST)
         if form.is_valid():
-            form.save()
+            process_recipe_create_update_POST(form)
             return redirect('home')
     return render(request, 'add-recipe.html', context)
 
@@ -53,7 +57,7 @@ def edit_recipe(request: HttpRequest, pk: str) -> HttpResponse:
     if request.method == 'POST':
         form = RecipeForm(request.POST, instance=recipe)
         if form.is_valid():
-            form.save()
+            process_recipe_create_update_POST(form)
             return redirect('recipe', pk=pk)
 
     return render(request, 'add-recipe.html', context)

@@ -33,12 +33,29 @@
     <br>
     <div class="main_center">
         <h3>{{ recipe.title }}</h3>
+        {% if recipe.total_overall_time_minutes > 0 %}
+            <h5>Total time: {{ recipe.total_overall_time_minutes }} minutes</h5>
+            <h6>Active time: {{ recipe.total_active_time_minutes }} minutes</h6>
+            <h6>Future Enhancement - Hover/or expand to see full time breakdown</h6>
+        {% endif %}
         <p>{{ recipe.description_free_text|linebreaksbr  }}</p>
         {% if recipe.original_website_link %}
             <p><a href="{{ recipe.original_website_link }}">Original Recipe Link</a></p>
         {% endif %}
+        <h6>Ingredients:</h6>
         <p>{{ recipe.ingredients_free_text|linebreaksbr  }}</p>
+        <h6>Directions:</h6>
         <p>{{ recipe.instructions_free_text|linebreaksbr }}</p>
-        <p>Serves: {{ recipe.servings_per_nominal }}</p>
+        {% if recipe.servings_per_nominal %}
+            <h6>Serves: {{ recipe.servings_per_nominal }}</h6>
+        {% endif %}
+        {% if recipe.nutrition_free_text %}
+            <h6>Nutrition:</h6>
+            <p>{{ recipe.nutrition_free_text|linebreaksbr }}</p>
+        {% endif %}
+        {% if recipe.notes_free_text %}
+            <h6>Notes:</h6>
+            <p>{{ recipe.notes_free_text|linebreaksbr }}</p>
+        {% endif %}
     </div>
 {% endblock content %}
