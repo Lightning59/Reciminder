@@ -53,7 +53,8 @@ class Recipe(models.Model):
         """Just returns the full recipe title as a string."""
         return self.title
 
-    def calc_and_store_times(self):
+    def calc_and_store_times(self) -> None:
+        """total up and store active passive and total of each times into the recipe model"""
         self.total_active_time_minutes=(self.pre_prep_active_time_minutes
                                         + self.prep_active_time_minutes
                                         + self.cook_active_time_minutes

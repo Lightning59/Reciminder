@@ -16,6 +16,8 @@ def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
     return recipe
 
 def process_recipe_create_update_POST(form_object: RecipeForm) -> None:
+    """Gets a recipe object from a valid create/update RecipeForm then runs appropriate calculations and saves to the db
+    Currently calculates the total active and passive time as well as the total overall then calls db save"""
     recipe = form_object.save(commit=False)
     recipe.calc_and_store_times()
     recipe.save()
