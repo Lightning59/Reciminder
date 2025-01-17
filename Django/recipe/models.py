@@ -32,14 +32,14 @@ class Recipe(models.Model):
 
     servings_per_nominal = models.FloatField(null=True, blank=True, validators=[validate_positive_float])
 
-    pre_prep_active_time_minutes=models.PositiveSmallIntegerField(null=False, blank=False, default=0)
-    prep_active_time_minutes = models.PositiveSmallIntegerField(null=False, blank=False, default=0)
-    cook_active_time_minutes = models.PositiveSmallIntegerField(null=False, blank=False, default=0)
-    clean_active_time_minutes = models.PositiveSmallIntegerField(null=False, blank=False, default=0)
+    pre_prep_active_time_minutes=models.PositiveSmallIntegerField(null=False, blank=True, default=0)
+    prep_active_time_minutes = models.PositiveSmallIntegerField(null=False, blank=True, default=0)
+    cook_active_time_minutes = models.PositiveSmallIntegerField(null=False, blank=True, default=0)
+    clean_active_time_minutes = models.PositiveSmallIntegerField(null=False, blank=True, default=0)
 
-    pre_prep_passive_time_minutes=models.PositiveIntegerField(null=False, blank=False, default=0)
-    cook_passive_time_minutes=models.PositiveSmallIntegerField(null=False, blank=False, default=0)
-    after_cook_passive_time_minutes=models.PositiveIntegerField(null=False, blank=False, default=0)
+    pre_prep_passive_time_minutes=models.PositiveIntegerField(null=False, blank=True, default=0)
+    cook_passive_time_minutes=models.PositiveSmallIntegerField(null=False, blank=True, default=0)
+    after_cook_passive_time_minutes=models.PositiveIntegerField(null=False, blank=True, default=0)
 
     total_active_time_minutes=models.PositiveSmallIntegerField(null=False, blank=True, default=0)
     total_passive_time_minutes=models.PositiveIntegerField(null=False, blank=True, default=0)

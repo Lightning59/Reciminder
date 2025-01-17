@@ -38,3 +38,48 @@ class RecipeForm(forms.ModelForm):
             'cook_passive_time_minutes' : 'Any Passive Cooking Time (Baking in the oven for 2 hours)',
             'after_cook_passive_time_minutes': 'Passive after cook time (Rest period or Ice cream chilling in freezer).',
         }
+
+    def clean_pre_prep_active_time_minutes(self):
+        data = self.cleaned_data['pre_prep_active_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+    def clean_prep_active_time_minutes(self):
+        data = self.cleaned_data['prep_active_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+    def clean_cook_active_time_minutes(self):
+        data = self.cleaned_data['cook_active_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+    def clean_clean_active_time_minutes(self):
+        data = self.cleaned_data['clean_active_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+    def clean_pre_prep_passive_time_minutes(self):
+        data = self.cleaned_data['pre_prep_passive_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+    def clean_cook_passive_time_minutes(self):
+        data = self.cleaned_data['cook_passive_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+    def clean_after_cook_passive_time_minutes(self):
+        data = self.cleaned_data['after_cook_passive_time_minutes']
+        if not data:
+            data = 0
+        return data
+
+
+
