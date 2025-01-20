@@ -24,7 +24,7 @@
     {% for recipe in recipes %}
         <a class="recipe-card" href="{% url 'recipe' recipe.id %}"><div class="card">
             <h4>{{ recipe.title }}</h4>
-            <p>{{ recipe.description_free_text|linebreaksbr  }}</p>
+            <p>{{ recipe.description_free_text|truncatechars:250|linebreaksbr  }}</p>
         </div></a>
     {% endfor %}
     </div>
