@@ -1,0 +1,57 @@
+@media (prefers-color-scheme: dark) {
+    :root{
+        --main-bg-color: #1b1b1b;
+        --main-font-color: #cdcdcd;
+    }
+    a{
+        color: lightblue;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root{
+        --main-bg-color: #ffffff;
+        --main-font-color: #000000;
+    }
+}
+
+html{
+    font-family: "Helvetica", Arial, SansSerif;
+    background-color: var(--main-bg-color);
+    color: var(--main-font-color)
+}
+
+header{
+    background-color: orange;
+    margin: -8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* This next line makes the RH links wrap nicely under the title for really narrow pages */
+    flex-flow: row wrap;
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header h1{
+    color: slategray;
+}
+
+nav a{
+    display: block;
+    background-color: #032a4b;
+    margin: 7px;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+nav a:hover{
+    background-color: #011626;
+}
