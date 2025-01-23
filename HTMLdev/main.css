@@ -35,6 +35,8 @@ header{
     /* This next line makes the RH links wrap nicely under the title for really narrow pages */
     flex-flow: row wrap;
     position: sticky;
+    top:  0rem;
+    height: 7vh;
     z-index: 1000;
 }
 
@@ -42,7 +44,13 @@ footer{
     position: fixed;
     left: 0;
     bottom: 0;
+    height: 5vh;
     width: 100%;
+    background-color: var(--main-bg-color);
+}
+
+.footer-protector{
+    height: 5vh;
 }
 
 nav{
@@ -100,6 +108,34 @@ h1.landing-page{
     font-size: max(35px, 5vw);
 }
 
-.footer-protector{
-    height: 50px
+
+.all-recipe-search{
+    text-align: center;
+    font-size: 1.2rem;
+    border:none
+}
+
+input.all-recipe-search{
+    width:40%;
+    min-width: 100px;
+    margin-left: 10px;
+    text-align: left;
+    height:2rem;
+    border-radius: 6px;
+}
+
+.sticky-recipe-search{
+    position: sticky;
+    padding-top: 1px;
+    padding-bottom: 20px;
+    top: 7vh;
+    background-color: var(--main-bg-color);
+}
+
+.search-button{
+    height: 2rem;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    margin-left: 5px;
+    border:none
 }
