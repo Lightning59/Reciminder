@@ -37,6 +37,7 @@ header{
     position: sticky;
     top:  0rem;
     height: 7vh;
+    min-height: 100px;
     z-index: 1000;
 }
 
@@ -45,12 +46,14 @@ footer{
     left: 0;
     bottom: 0;
     height: 5vh;
+    min-height: 40px;
     width: 100%;
     background-color: var(--main-bg-color);
 }
 
 .footer-protector{
-    height: 5vh;
+
+    height: max(40px,5vh);
 }
 
 nav{
@@ -128,7 +131,7 @@ input.all-recipe-search{
     position: sticky;
     padding-top: 1px;
     padding-bottom: 20px;
-    top: 7vh;
+    top: max(100px,7vh);
     background-color: var(--main-bg-color);
 }
 
