@@ -190,7 +190,8 @@ input.all-recipe-search{
 
 .recipe-card-title{
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
     margin-top: .5rem
 }
 
