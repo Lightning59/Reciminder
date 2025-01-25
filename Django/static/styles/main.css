@@ -206,6 +206,8 @@ input.all-recipe-search{
     margin: auto;
 }
 
-.recipe-page h2,h3,p{
+.recipe-page h2,
+.recipe-page h3,
+.recipe-page p{
     text-align: left;
 }

@@ -33,10 +33,10 @@ class TestLandingPageView:
         response = client.get('/')
         assert response.status_code == 200
         assertTemplateUsed(response, 'landing_page.html')
-        assertContains(response, 'Project is still in work.</p>')
+        assertContains(response, 'This project is still in work.')
 
     def test_call_index_by_reverse(self, client):
         response = client.get(reverse('index'))
         assert response.status_code == 200
         assertTemplateUsed(response, 'landing_page.html')
-        assertContains(response, 'Project is still in work.</p>')
+        assertContains(response, 'This project is still in work.')

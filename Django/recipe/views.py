@@ -75,9 +75,9 @@ def delete_recipe(request: HttpRequest, pk: str) -> HttpResponse:
     return redirect('home')
 
 
-# My Current guess for a good default results per page is ~30-40 - anything lower is still experimentation
+# My Current guess for a good default results per page is ~20-40 - anything lower is still experimentation
 @login_required(login_url='login')
-def logged_in_home(request: HttpRequest, pagination_res_per_page: int = 5) -> HttpResponse:
+def logged_in_home(request: HttpRequest, pagination_res_per_page: int = 20) -> HttpResponse:
     """Displays paginated all recipes the user can see or filters down based on simple search algorithm
     Currently just displays all recipes until searched as all users can currently see all recipes
     Accepts pagination as keyword argument with prod default (allows lower to be used in testing)"""
