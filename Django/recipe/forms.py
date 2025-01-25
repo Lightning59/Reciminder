@@ -1,4 +1,4 @@
-from .models import Recipe
+from .models import Recipe, RecipeImage
 from django import forms
 
 
@@ -83,3 +83,7 @@ class RecipeForm(forms.ModelForm):
 
 
 
+class RecipeImageForm(forms.ModelForm):
+    class Meta:
+        model = RecipeImage
+        fields = ['image']

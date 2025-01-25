@@ -4,9 +4,13 @@
     <div class="half main_center">
     <h1>Add a Recipe!</h1>
     <br>
-    <form method="POST" action="">
+    <form method="POST" action="" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in form %}
+        {{ field.label }}
+        {{ field }}<br>
+    {% endfor %}
+    {% for field in imageform %}
         {{ field.label }}
         {{ field }}<br>
     {% endfor %}

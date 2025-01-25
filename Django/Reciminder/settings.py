@@ -169,12 +169,11 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 if db_mode.lower() == "dev":
-    MEDIA_ROOT =[
-        DB_DIR / 'devmedia', # media file is in the same folder as the DB
-    ]
+    MEDIA_ROOT = DB_DIR / 'devmedia' # media file is in the same folder as the DB
+
 else:
     MEDIA_ROOT = [
-        DB_DIR / 'media',  # media file is in the same folder as the DB
+        DB_DIR / 'media'  # This ends up being in the root file of the container even though there is no dev DB it's the same place.
     ]
 
 

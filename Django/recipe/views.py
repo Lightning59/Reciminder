@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from recipe.forms import RecipeForm
+from recipe.forms import RecipeForm, RecipeImageForm
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse
 from .models import *
@@ -28,11 +28,18 @@ def add_recipe(request: HttpRequest) -> HttpResponse:
     """Allows the logged-in user to add a recipe sends them to the home screen if successful otherwise back to
      add-recipe. redirects logged-out user to the login screen."""
     form = RecipeForm()
-    context = {'form': form}
+    imageform = RecipeImageForm()
+    context = {
+        'form': form,
+        'imageform': imageform,
+    }
     if request.method == 'POST':
         form = RecipeForm(request.POST)
+        imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
             process_recipe_create_update_POST(form)
+            if imageform.is_valid():
+                imageform.save()
             return redirect('home')
     return render(request, 'add-recipe.html', context)
 

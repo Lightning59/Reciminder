@@ -99,3 +99,9 @@ def search_recipes(request: HttpRequest) -> tuple[QuerySet, str | None]:
         search_query = ''
 
     return recipes, search_query
+
+
+
+class RecipeImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid6.uuid7, unique=True, editable=False)
+    image = models.ImageField(upload_to='recipe_images', null=True, blank=True)
