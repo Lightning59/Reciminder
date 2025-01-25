@@ -1,0 +1,199 @@
+@media (prefers-color-scheme: dark) {
+    :root{
+        --main-bg-color: #1b1b1b;
+        --main-font-color: #cdcdcd;
+    }
+    a{
+        color: lightblue;
+    }
+    a:hover{
+        text-decoration: wavy underline ;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root{
+        --main-bg-color: #ffffff;
+        --main-font-color: #000000;
+    }
+}
+
+html{
+    font-family: "Helvetica", Arial, SansSerif;
+    background-color: var(--main-bg-color);
+    color: var(--main-font-color)
+}
+
+header{
+    background-color: orange;
+    margin: -8px;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* This next line makes the RH links wrap nicely under the title for really narrow pages */
+    flex-flow: row wrap;
+    position: sticky;
+    top:  0rem;
+    height: 7vh;
+    min-height: 100px;
+    z-index: 1000;
+}
+
+footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 5vh;
+    min-height: 40px;
+    width: 100%;
+    background-color: var(--main-bg-color);
+}
+
+.footer-protector{
+
+    height: max(40px,5vh);
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand{
+    color: #303a44;
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.brand:hover{
+    text-decoration: none;
+}
+
+nav a{
+    display: block;
+    background-color: #032a4b;
+    margin: 7px;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+nav a:hover{
+    background-color: #011626;
+    text-decoration: none;
+}
+
+main {
+    align-items: center;
+}
+
+h1,
+h2,
+p{
+    text-align: center;
+}
+
+div.landing-page{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    align-content: center;
+}
+
+h1.landing-page{
+    font-size: max(35px, 5vw);
+}
+
+
+.all-recipe-search{
+    text-align: center;
+    font-size: 1.2rem;
+    border:none
+}
+
+input.all-recipe-search{
+    width:40%;
+    min-width: 100px;
+    margin-left: 10px;
+    text-align: left;
+    height:2rem;
+    border-radius: 6px;
+}
+
+.sticky-recipe-search{
+    position: sticky;
+    padding-top: 1px;
+    padding-bottom: 20px;
+    top: max(100px,7vh);
+    background-color: var(--main-bg-color);
+}
+
+.search-button{
+    height: 2rem;
+    font-size: 1.2rem;
+    border-radius: 6px;
+    margin-left: 5px;
+    border:none
+}
+
+.pagination-container{
+    display: flex;
+    justify-content: center;
+}
+
+.paginate-button{
+    display: block;
+    text-decoration: none;
+    background-color: #2ecc40;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.paginate-button:hover{
+    background-color: #0c260c;
+    text-decoration: none;
+}
+
+.card-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.recipe-card{
+    display: block;
+    width: calc(100%/5);
+    min-width: calc(min(60vw, 15rem) - 2rem);
+    height: 20rem;
+    background-color: #3c3c3c;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 1rem;
+    text-decoration: None;
+    color: white;
+}
+
+.recipe-card:hover{
+    text-decoration: None;
+    background-color: #2c2c2c;
+}
+
+.recipe-card-title{
+    text-align: center;
+    font-size: 2rem;
+    margin-top: .5rem
+}
+
+.recipe-card p{
+    text-align: left;
+}

@@ -1,39 +1,31 @@
 {% extends 'main.html' %}
 
 {% block content %}
-    <div class="flex one">
-        <h1 class="centertext"> Welcome to Reciminder!</h1>
-        <h3 class="centertext"> You are logged in as {{ user.username }}!</h3>
-        <p class="centertext">UserFirstName: {{ user.first_name }}</p>
-        <p class="centertext"><a href="{% url 'add-recipe' %}">Click here to add a recipe.</a></p>
-        <div class="recipe-search">
-              <form id="searchForm" class="form" action="" method="get">
-                <div class="">
-                  <label>Search For Recipes</label>
-                  <input class="" id="" type="text" name="search_query"
+    <h1>View or Search Recipes</h1>
+    <div class="sticky-recipe-search">
+        <p><a href="{% url 'add-recipe' %}">Click here to add a recipe.</a></p>
+        <form id="searchForm" class="form all-recipe-search" action="" method="get">
+            <label>Search For Recipes</label>
+            <input  id="" class="all-recipe-search" type="text" name="search_query"
                     placeholder="What are you hungry for?" value="{{search_query}}"/>
-                </div>
-
-                <input class="button danger-align" type="submit" value="Search" />
-              </form>
-        </div>
+            <input class="search-button" type="submit" value="Search" />
+        </form>
     </div>
-    <br>
-    <section>
-    <div class="main_center center flex one two-800  three-1200">
+    <div class="card-container">
     {% for recipe in recipes %}
-        <a class="recipe-card" href="{% url 'recipe' recipe.id %}"><div class="card">
-            <h4>{{ recipe.title }}</h4>
-            <p>{{ recipe.description_free_text|truncatechars:250|linebreaksbr  }}</p>
-        </div></a>
+        <a class="recipe-card" href="{% url 'recipe' recipe.id %}">
+            <article class="card">
+                <h4 class="recipe-card-title">{{ recipe.title }}</h4>
+                <p>{{ recipe.description_free_text|truncatechars:250|linebreaksbr  }}</p>
+            </article>
+        </a>
     {% endfor %}
     </div>
     {% if total_pages > 1 %}
-    <div class="main_center flex center">
+    <div class="pagination-container">
         {% for page in page_range %}
-        <a class="button paginate-button" href="?page={{page}}">{{ page }}</a>
+        <a class="paginate-button" href="?page={{page}}">{{ page }}</a>
         {% endfor %}
     </div>
     {% endif %}
-    </section>
 {% endblock content %}

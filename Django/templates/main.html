@@ -1,77 +1,31 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Reciminder</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
-    <style>
-        footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 3em;
-        padding: 0 .6em;
-        background: #fff;
-        box-shadow: 0 0 .2em rgba(170, 170, 170, .2);
-        z-index: 10000;
-        transition: all .3s;
-        transform-style: preserve-3d
-        }
-
-        .header {
-            margin: auto;
-            margin-top: 50px;
-        }
-        .main_center{
-            margin: auto;
-            width: 90%;
-        }
-        .recipe-card{
-            margin: 10px;
-            padding: 5px;
-            max-width: 400px;
-        }
-        .centertext{
-            text-align: center;
-        }
-        .danger-align{
-            float: right;
-        }
-        .paginate-button{
-            float: right;
-            margin: 10px;
-            max-width: 50px;
-        }
-        .recipe-search{
-            margin: auto;
-            width: 90%;
-            max-width: 1000px;
-        }
-        .stay-above-footer{
-            margin-bottom: 3em;
-        }
-
-    </style>
-</head>
-<body>
-<nav class="nav">
-    <a class="brand" href="{% url 'index' %}"><span>Reciminder</span></a>
-    {% if request.user.is_authenticated %}
-        <a class="button danger-align" href="{% url 'logout' %}">Logout</a>
-    {% else %}
-        <a class="button danger-align" href="#">Login</a>
-    {% endif %}
-</nav>
-<div class="header flex">
-    <h1 class="centertext">Then a Header?</h1>
-</div>
-<main class="stay-above-footer">
-    {% block content %}
-    {% endblock %}
-</main>
-<br>
-<footer class="footer">&copy; Reciminder</footer>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'styles/main.css' %}">
+        <title>Reciminder</title>
+    </head>
+    <body>
+        <header>
+            <a href="{% url 'index' %}" class="brand">Reciminder</a>
+            <nav class="nav">
+                <a href="#">Recipes</a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                    <a href="#">Login</a>
+                {% endif %}
+            </nav>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <div class="footer-protector"></div>
+        <footer>
+            <p>Copyright &copy; Reciminder 2025</p>
+        </footer>
+    </body>
 </html>
