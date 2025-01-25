@@ -198,3 +198,14 @@ input.all-recipe-search{
 .recipe-card p{
     text-align: left;
 }
+
+.recipe-page{
+    max-width: max(80vw, 1000px);
+    padding-left: .5rem;
+    padding-right: .5rem;
+    margin: auto;
+}
+
+.recipe-page h2,h3,p{
+    text-align: left;
+}
