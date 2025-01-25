@@ -3,6 +3,7 @@ from recipe.forms import RecipeForm
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse
 from .models import *
+from .utils import *
 
 
 def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
@@ -41,8 +42,12 @@ def view_recipe(request: HttpRequest, pk: str) -> HttpResponse:
     """Displays a specific recipe by its uuid7 pk, if the recipe has the deleted flag or never existed to begin with
     raise a 404 not found error"""
     recipe = scrub_invalid_recipe_pk(pk)
+    pretty_time_total=minutes_to_user_text(recipe.total_overall_time_minutes, long=True)
+    pretty_time_active=minutes_to_user_text(recipe.total_active_time_minutes, long=True)
     context = {
         'recipe': recipe,
+        'pretty_time_total': pretty_time_total,
+        'pretty_time_active': pretty_time_active,
     }
     return render(request, 'individual_recipe.html', context)
 
