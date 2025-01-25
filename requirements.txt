@@ -4,6 +4,7 @@ coverage==7.6.10
 Django==5.1.4
 iniconfig==2.0.0
 packaging==24.2
+pillow==11.1.0
 pluggy==1.5.0
 psycopg==3.2.3
 psycopg-binary==3.2.3

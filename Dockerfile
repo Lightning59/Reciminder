@@ -14,6 +14,10 @@ ADD Django .
 #comment out for final non-dev releases
 WORKDIR /
 ADD db.sqlite3 .
+WORKDIR /devmedia
+ADD devmedia .
+
+
 WORKDIR /app
 
 # Expose the port the app will run on
