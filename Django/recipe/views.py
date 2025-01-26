@@ -16,11 +16,13 @@ def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
         raise Http404("Recipe was deleted")
     return recipe
 
-def process_recipe_create_update_POST(form_object: RecipeForm) -> None:
+def process_recipe_create_update_POST(form_object: RecipeForm, image:RecipeImage=None) -> None:
     """Gets a recipe object from a valid create/update RecipeForm then runs appropriate calculations and saves to the db
     Currently calculates the total active and passive time as well as the total overall then calls db save"""
     recipe = form_object.save(commit=False)
     recipe.calc_and_store_times()
+    if image:
+        recipe.main_image = image
     recipe.save()
 
 @login_required(login_url='login')
@@ -37,9 +39,12 @@ def add_recipe(request: HttpRequest) -> HttpResponse:
         form = RecipeForm(request.POST)
         imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
-            process_recipe_create_update_POST(form)
             if imageform.is_valid():
+                image_inst=imageform.save(commit=False)
                 imageform.save()
+                process_recipe_create_update_POST(form, image=image_inst)
+            else:
+                process_recipe_create_update_POST(form)
             return redirect('home')
     return render(request, 'add-recipe.html', context)
 
