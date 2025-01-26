@@ -31,6 +31,7 @@
             <p>{{ recipe.notes_free_text|linebreaksbr }}</p>
         {% endif %}
         {% if recipe.main_image %}
+            <p>Image Placeholder:</p>
             <img src="{{ recipe.main_image.image.url }}" alt="Main Recipe Image">
         {% endif %}
     </div>
