@@ -16,7 +16,7 @@ def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
         raise Http404("Recipe was deleted")
     return recipe
 
-def process_recipe_create_update_POST(form_object: RecipeForm, image:RecipeImage=None) -> None:
+def process_recipe_create_update_POST(form_object: RecipeForm, image=None) -> None:
     """Gets a recipe object from a valid create/update RecipeForm then runs appropriate calculations and saves to the db
     Currently calculates the total active and passive time as well as the total overall then calls db save"""
     recipe = form_object.save(commit=False)
@@ -69,14 +69,25 @@ def edit_recipe(request: HttpRequest, pk: str) -> HttpResponse:
     """Allows logged-in users to edit all fields in a recipe (except pk, created-date, modified-date, and is deleted)"""
     recipe = scrub_invalid_recipe_pk(pk)
     form = RecipeForm(instance=recipe)
+    if recipe.main_image:
+        imageform = RecipeImageForm(instance=recipe.main_image)
+    else:
+        imageform = RecipeImageForm()
     context = {
         'recipe': recipe,
         'form': form,
+        'imageform': imageform,
     }
     if request.method == 'POST':
         form = RecipeForm(request.POST, instance=recipe)
+        imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
-            process_recipe_create_update_POST(form)
+            if imageform.is_valid():
+                image_inst=imageform.save(commit=False)
+                imageform.save()
+                process_recipe_create_update_POST(form, image=image_inst)
+            else:
+                process_recipe_create_update_POST(form)
             return redirect('recipe', pk=pk)
 
     return render(request, 'add-recipe.html', context)

@@ -6,6 +6,8 @@ services:
     env_file:
       - prod.env
     command: bash -c "python Django/manage.py migrate && python Django/manage.py runserver 0.0.0.0:8987"
+    volumes:
+      - ~/media:/media
     ports:
       - "8987:8987"
 
