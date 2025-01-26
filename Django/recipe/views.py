@@ -40,9 +40,13 @@ def add_recipe(request: HttpRequest) -> HttpResponse:
         imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
             if imageform.is_valid():
-                image_inst=imageform.save(commit=False)
-                imageform.save()
-                process_recipe_create_update_POST(form, image=image_inst)
+                image_obj = imageform.cleaned_data['image']
+                if image_obj:
+                    image_inst = imageform.save(commit=False)
+                    imageform.save()
+                    process_recipe_create_update_POST(form, image=image_inst)
+                else:
+                    process_recipe_create_update_POST(form)
             else:
                 process_recipe_create_update_POST(form)
             return redirect('home')
@@ -83,9 +87,13 @@ def edit_recipe(request: HttpRequest, pk: str) -> HttpResponse:
         imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
             if imageform.is_valid():
-                image_inst=imageform.save(commit=False)
-                imageform.save()
-                process_recipe_create_update_POST(form, image=image_inst)
+                image_obj=imageform.cleaned_data['image']
+                if image_obj:
+                    image_inst=imageform.save(commit=False)
+                    imageform.save()
+                    process_recipe_create_update_POST(form, image=image_inst)
+                else:
+                    process_recipe_create_update_POST(form)
             else:
                 process_recipe_create_update_POST(form)
             return redirect('recipe', pk=pk)
