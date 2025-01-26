@@ -31,7 +31,7 @@
             <p>{{ recipe.notes_free_text|linebreaksbr }}</p>
         {% endif %}
         {% if recipe.main_image %}
-        <img src="{{ recipe.main_image.image.url }}" alt="Main Recipe Image">
+            <img src="{{ recipe.main_image.image.url }}" alt="Main Recipe Image">
         {% endif %}
     </div>
 {% endblock content %}
