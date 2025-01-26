@@ -1,8 +1,10 @@
+import os, uuid
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from datetime import datetime
 import uuid6
 from django.http import HttpRequest
 
@@ -17,6 +19,8 @@ class Recipe(models.Model):
 
     # test long recipe title - Came to ~100. So pick 255(256?) as a good permissive limit?
     title=models.CharField(max_length=255, null=False, blank=False)
+
+    main_image = models.ForeignKey('RecipeImage', on_delete=models.SET_NULL, null=True, blank=True)
 
     created=models.DateTimeField(auto_now_add=True)
     modified=models.DateTimeField(auto_now=True)
@@ -99,3 +103,15 @@ def search_recipes(request: HttpRequest) -> tuple[QuerySet, str | None]:
         search_query = ''
 
     return recipes, search_query
+
+def recipe_images(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('recipe_images/', filename)
+
+class RecipeImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid6.uuid7, unique=True, editable=False)
+    image = models.ImageField(upload_to=recipe_images, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    deleted_by_user = models.BooleanField(default=False)

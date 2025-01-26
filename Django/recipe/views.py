@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from recipe.forms import RecipeForm
+from recipe.forms import RecipeForm, RecipeImageForm
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse
 from .models import *
+from .utils import *
 
 
 def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
@@ -15,11 +16,13 @@ def scrub_invalid_recipe_pk(recipe_pk: str) -> Recipe:
         raise Http404("Recipe was deleted")
     return recipe
 
-def process_recipe_create_update_POST(form_object: RecipeForm) -> None:
+def process_recipe_create_update_POST(form_object: RecipeForm, image=None) -> None:
     """Gets a recipe object from a valid create/update RecipeForm then runs appropriate calculations and saves to the db
     Currently calculates the total active and passive time as well as the total overall then calls db save"""
     recipe = form_object.save(commit=False)
     recipe.calc_and_store_times()
+    if image:
+        recipe.main_image = image
     recipe.save()
 
 @login_required(login_url='login')
@@ -27,11 +30,21 @@ def add_recipe(request: HttpRequest) -> HttpResponse:
     """Allows the logged-in user to add a recipe sends them to the home screen if successful otherwise back to
      add-recipe. redirects logged-out user to the login screen."""
     form = RecipeForm()
-    context = {'form': form}
+    imageform = RecipeImageForm()
+    context = {
+        'form': form,
+        'imageform': imageform,
+    }
     if request.method == 'POST':
         form = RecipeForm(request.POST)
+        imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
-            process_recipe_create_update_POST(form)
+            if imageform.is_valid():
+                image_inst=imageform.save(commit=False)
+                imageform.save()
+                process_recipe_create_update_POST(form, image=image_inst)
+            else:
+                process_recipe_create_update_POST(form)
             return redirect('home')
     return render(request, 'add-recipe.html', context)
 
@@ -41,8 +54,12 @@ def view_recipe(request: HttpRequest, pk: str) -> HttpResponse:
     """Displays a specific recipe by its uuid7 pk, if the recipe has the deleted flag or never existed to begin with
     raise a 404 not found error"""
     recipe = scrub_invalid_recipe_pk(pk)
+    pretty_time_total=minutes_to_user_text(recipe.total_overall_time_minutes, long=True)
+    pretty_time_active=minutes_to_user_text(recipe.total_active_time_minutes, long=True)
     context = {
         'recipe': recipe,
+        'pretty_time_total': pretty_time_total,
+        'pretty_time_active': pretty_time_active,
     }
     return render(request, 'individual_recipe.html', context)
 
@@ -52,14 +69,25 @@ def edit_recipe(request: HttpRequest, pk: str) -> HttpResponse:
     """Allows logged-in users to edit all fields in a recipe (except pk, created-date, modified-date, and is deleted)"""
     recipe = scrub_invalid_recipe_pk(pk)
     form = RecipeForm(instance=recipe)
+    if recipe.main_image:
+        imageform = RecipeImageForm(instance=recipe.main_image)
+    else:
+        imageform = RecipeImageForm()
     context = {
         'recipe': recipe,
         'form': form,
+        'imageform': imageform,
     }
     if request.method == 'POST':
         form = RecipeForm(request.POST, instance=recipe)
+        imageform = RecipeImageForm(request.POST, request.FILES)
         if form.is_valid():
-            process_recipe_create_update_POST(form)
+            if imageform.is_valid():
+                image_inst=imageform.save(commit=False)
+                imageform.save()
+                process_recipe_create_update_POST(form, image=image_inst)
+            else:
+                process_recipe_create_update_POST(form)
             return redirect('recipe', pk=pk)
 
     return render(request, 'add-recipe.html', context)

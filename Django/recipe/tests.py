@@ -6,6 +6,7 @@ from django.urls import reverse
 from .views import *
 from .models import *
 from .forms import *
+from .utils import *
 from users.test_fixtures_users import *
 
 
@@ -576,3 +577,48 @@ def test_view_home_logged_in(client, recipe_search_group, basic_user):
 def test_view_home_logged_out(client):
     response = client.get(reverse('home'))
     assertRedirects(response, reverse('login')+'?next=/recipe/home/', status_code=302, target_status_code=200)
+
+
+class TestMinutesDiplayTextFunction:
+
+    def test_zero_minutes(self):
+        assert minutes_to_user_text(0) == ''
+
+    def test_negative_minutes(self):
+        with pytest.raises(ValueError):
+            minutes_to_user_text(-10)
+
+    def test_thirty_short(self):
+        assert minutes_to_user_text(30) == '30m'
+
+    def test_thirty_long(self):
+        assert minutes_to_user_text(30, long=True) == '30 minutes'
+
+    def test_sixty_short(self):
+        assert minutes_to_user_text(60) == '1h'
+
+    def test_onetwenty_long(self):
+        assert minutes_to_user_text(120, long=True) == '2 hours'
+
+    def test_onetwentytwo_short(self):
+        assert minutes_to_user_text(122) == '2h 2m'
+
+    def test_onetwentytwo_long(self):
+        assert minutes_to_user_text(122, long=True) == '2 hours 2 minutes'
+
+    def test_oneday_short(self):
+        assert minutes_to_user_text(1440) == '1d'
+
+    def test_oneday_long(self):
+        assert minutes_to_user_text(1440, long=True) == '1 days'
+
+    def test_onedayoneminute_short(self):
+        assert minutes_to_user_text(1441) == '1d 1m'
+
+    def test_onedaytwohour_short(self):
+        assert minutes_to_user_text(1560) == '1d 2h'
+
+    def test_onedaytwohouroneminute_short(self):
+        assert minutes_to_user_text(1561) == '1d 2h 1m'
+
+

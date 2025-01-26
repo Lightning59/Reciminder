@@ -167,6 +167,14 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+MEDIA_URL = '/media/'
+if db_mode.lower() == "dev":
+    MEDIA_ROOT = DB_DIR / 'devmedia' # media file is in the same folder as the DB
+
+else:
+    MEDIA_ROOT = DB_DIR / 'media' # media file is in the same folder as the DB
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

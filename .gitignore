@@ -5,3 +5,4 @@ prod_env/
 Django/htmlcov/*
 .coverage
 ref/
+devmedia/

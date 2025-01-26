@@ -7,8 +7,8 @@
     <a href="#">Delete this Recipe (not yet working)</a>
     <div class="recipe-page">
         {% if recipe.total_overall_time_minutes > 0 %}
-            <h2>Total time: {{ recipe.total_overall_time_minutes }} minutes</h2>
-            <h3>Active time: {{ recipe.total_active_time_minutes }} minutes</h3>
+            <h2>Total time: {{ pretty_time_total }}</h2>
+            <h3>Active time: {{ pretty_time_active }}</h3>
             <h3>Future Enhancement - Hover/or expand to see full time breakdown</h3>
         {% endif %}
         <p>{{ recipe.description_free_text|linebreaksbr  }}</p>
@@ -29,6 +29,9 @@
         {% if recipe.notes_free_text %}
             <h2>Notes:</h2>
             <p>{{ recipe.notes_free_text|linebreaksbr }}</p>
+        {% endif %}
+        {% if recipe.main_image %}
+            <img src="{{ recipe.main_image.image.url }}" alt="Main Recipe Image">
         {% endif %}
     </div>
 {% endblock content %}
