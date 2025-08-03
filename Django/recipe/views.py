@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+
+import recipe
 from recipe.forms import RecipeForm, RecipeImageForm
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse
@@ -126,5 +128,6 @@ def logged_in_home(request: HttpRequest, pagination_res_per_page: int = 20) -> H
                'recipes': this_page_recipes,
                'page_range': page_range,
                'total_pages': total_pages,
-               'search_query': search_query}
+               'search_query': search_query,
+               'pretty_time_fun': minutes_to_user_text}
     return render(request, 'logged_in_temp.html', context)

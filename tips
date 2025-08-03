@@ -1,0 +1,4 @@
+To use command line with dev environment file in linux
+
+Assumes the pwd is the DJango directory which Pycharm seems to usually default to.
+export $(cat ../dev.env | xargs)

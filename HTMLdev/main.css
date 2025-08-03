@@ -171,7 +171,9 @@ input.all-recipe-search{
 }
 
 .recipe-card{
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: calc(100%/5);
     min-width: calc(min(60vw, 15rem) - 2rem);
     height: 20rem;
@@ -181,6 +183,7 @@ input.all-recipe-search{
     border-radius: 1rem;
     text-decoration: None;
     color: white;
+
 }
 
 .recipe-card:hover{
@@ -190,10 +193,47 @@ input.all-recipe-search{
 
 .recipe-card-title{
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
     margin-top: .5rem
 }
 
 .recipe-card p{
+    text-align: left;
+    max-height: 12vw;
+}
+
+.card{
+    overflow: clip;
+}
+
+.timediv{
+    justify-self: flex-end;
+
+}
+
+.timebutton{
+    text-decoration: none;
+    background-color: #cdcdcd;
+    margin: 5px;
+    padding: 5px;
+    border-radius:8px;
+}
+
+.activetime{
+    float: right;
+}
+
+
+.recipe-page{
+    max-width: max(80vw, 1000px);
+    padding-left: .5rem;
+    padding-right: .5rem;
+    margin: auto;
+}
+
+.recipe-page h2,
+.recipe-page h3,
+.recipe-page p{
     text-align: left;
 }
