@@ -200,7 +200,7 @@ input.all-recipe-search{
 
 .recipe-card p{
     text-align: left;
-    max-height: 12vw;
+    max-height: 30vh;
 }
 
 .card{

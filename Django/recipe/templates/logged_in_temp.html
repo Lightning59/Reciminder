@@ -20,8 +20,8 @@
                 <p>{{ recipe.description_free_text|truncatechars:250|linebreaksbr  }}</p>
             </article>
             <div class="timediv">
-                <button class="timebutton totaltime">{% pretty_time_print recipe.total_overall_time_minutes false %}</button>
-                <button class="timebutton activetime">{% pretty_time_print recipe.total_active_time_minutes false %}</button>
+                <button class="timebutton totaltime" Title="Total Time">{% pretty_time_print recipe.total_overall_time_minutes false %}</button>
+                <button class="timebutton activetime" Title="Active Work Time">{% pretty_time_print recipe.total_active_time_minutes false %}</button>
             </div>
         </a>
     {% endfor %}

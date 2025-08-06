@@ -200,11 +200,11 @@ input.all-recipe-search{
 
 .recipe-card p{
     text-align: left;
-    max-height: 12vw;
+    max-height: 30vh;
 }
 
 .card{
-    overflow: clip;
+    overflow: hidden;
 }
 
 .timediv{
@@ -236,4 +236,21 @@ input.all-recipe-search{
 .recipe-page h3,
 .recipe-page p{
     text-align: left;
+}
+
+.recipecardimage{
+    display: block;
+    max-width: 100%;
+    max-height:15rem;
+    width: auto;
+    height: auto;
+}
+
+.centerimagediv{
+    display: flex;
+    justify-content: center;
+}
+
+.centerimagediv:hover{
+    display: none;
 }

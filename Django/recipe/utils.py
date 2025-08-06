@@ -1,8 +1,5 @@
-from django import template
 
-register = template.Library()
 
-@register.simple_tag
 def minutes_to_user_text(minutes: int, long: bool=False) -> str:
     if long:
         minutes_str = ' minutes'

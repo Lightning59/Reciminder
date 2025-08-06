@@ -6,3 +6,4 @@ Django/htmlcov/*
 .coverage
 ref/
 devmedia/
+/HTMLdev/Images/
