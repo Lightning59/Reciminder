@@ -17,7 +17,10 @@
         <a class="recipe-card" href="{% url 'recipe' recipe.id %}">
             <article class="card">
                 <h4 class="recipe-card-title">{{ recipe.title }}</h4>
-                <p>{{ recipe.description_free_text|truncatechars:250|linebreaksbr  }}</p>
+                {% if recipe.main_image %}
+                    <div class="centerimagediv"><img src="{{ recipe.main_image.image.url }}" class="recipecardimage" /></div>
+                {% endif %}
+                <p>{{ recipe.description_free_text|truncatechars:250|linebreaksbr }}</p>
             </article>
             <div class="timediv">
                 <button class="timebutton totaltime" Title="Total Time">{% pretty_time_print recipe.total_overall_time_minutes false %}</button>
